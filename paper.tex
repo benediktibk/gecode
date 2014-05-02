@@ -39,20 +39,56 @@
 	\end{abstract}
 	
 	\section{Introduction}
-	\textit{something general on constraint programming}
+	Constraint programming is a tool to solve mathematical problems through the formulation of constraints, which describe the desired solution. As typically a foraml and exact definition, like it can be found in \cite[p. 16]{handbookCP} for constraint propagation, is not as helpful as an example, I would like to give you a short overview on the topic through the well known problem \emph{SEND MORE MONEY}.
+	
+	Consider the problem
+	\[SEND + MORE = MONEY\]
+	where every character is a variable and the position in the word describes the weight.
+	\begin{equation}
+	\begin{split}
+		S \cdot 10^3 + E \cdot 10^2 + N \cdot 10^1 + D \cdot 10^0 + \\ 
+		M \cdot 10^3 + O \cdot 10^2 + R \cdot 10^1 + E \cdot 10^0 = \\ 
+		M \cdot 10^4 + O \cdot 10^3 + N \cdot 10^2 + E \cdot 10^1 + Y \cdot 10^0
+	\end{split}
+	\end{equation}		
+	
+	To narrow the solution space a little bit down I state additional constraints:
+	\begin{enumerate}
+	\item All variables must have different values.
+		\begin{equation}
+			S \ne E \land S \ne N \land S \ne D \land \dots \land E \ne N \land E \ne D \dots
+		\end{equation}	
+	\item There must not be a trailing zero. Combined with the so-called all-different constraint \cite{allDifferent} from above this results in
+		\begin{equation}
+			S \ne 0 \land M \ne 0
+		\end{equation}
+	\end{enumerate}
+	
+	Now a solver for constraint programming like Gecode provides the necessary tools to define these constraints in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected search algorithm. Actually this example contains only linear constraints and could therefore be solved through linear programming. As linear programming is only a subset of constraint programming the latter one is often the more useful one, because not every problem in the real world is linear or can be linearized in a useful way. Consequently constraint programming with its ability to consider constraints in there most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p. 221]{trendsInCP}.
+	
+	In the following I will describe the necessary steps to solve a problem with constraint programming and as example of an implementation I will always refer to \emph{Gecode} \cite{gecode}.
 	
 	\section{State of the Art}
-	\textit{what is in gecode implemented}
+	\subsection{Variable Domains}
 	
-	\textit{how does the stuff in gecode work}
+	\subsection{Constraint Types}
+	
+	\subsection{Constraint Propagation}
+	
+	\subsection{Search Algorithms}
 	
 	\section{Conclusion}
 	\textit{conclusion}
 	
 	\begin{thebibliography}{1}
-		\bibitem{IEEEhowto:kopka}
-		H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-		  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+		\bibitem{handbookCP}
+		F.~Rossi, P.van~Beek and T.Walsh, \emph{Handbook of Constraint Programming}, Amsterdam, The Netherlands: Elsevier, 2006, ISBN: 978-0-444-52726-4
+		\bibitem{allDifferent}
+		W.~van~Hoeve, \emph{The Alldifferent Constraint: A Survey}, http://www.andrew.cmu.edu/user/vanhoeve/papers/alldiff.pdf
+		\bibitem{trendsInCP}
+		F.~Benhamou, N.~Jussien, B.A.O'Sullivan, \emph{Trends in Constraint Programming}, Wiley-ISTE, 2007, ISBN: 978-1-905209-97-2
+		\bibitem{gecode}
+		http://www.gecode.org/
 	\end{thebibliography}
 \end{document}
 
