@@ -73,9 +73,9 @@
 	\subsection{Variable Domains}
 	In constraint programming to a variable a set of possible values is connected, the so called domain. This domain can be a finite or inifite set of integers, true or false and intervals. Depending on the domain a variable is called an integer, boolean or floating variable. Possible ranges for a variable $x$ of each domain are:
 	\begin{itemize}
-		\item[Integer]: $x \in \mathbb{N}$, $x \in \{-5, 4, 10\}$, \dots
-		\item[Bool]: $x \in \{\text{true}, \text{false}\}$
-		\item[Float]: $x \in [-4, 3]$, $x \in [-10, 8] \cup [10, 12]$, \dots
+		\item Integer: $x \in \mathbb{N}$, $x \in \{-5, 4, 10\}$, \dots
+		\item Bool: $x \in \{\text{true}, \text{false}\}$
+		\item Float: $x \in [-4, 3]$, $x \in [-10, 8] \cup [10, 12]$, \dots
 	\end{itemize}
 	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints or to apply trial and error through splitting the intervals. I will come back to this topic later during the discussion of the branch-and-bound search.
 	
