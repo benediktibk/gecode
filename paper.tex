@@ -77,7 +77,7 @@
 		\item Bool: $x \in \{\text{true}, \text{false}\}$
 		\item Float: $x \in [-4, 3]$, $x \in [-10, 8] \cup [10, 12]$, \dots
 	\end{itemize}
-	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints or to apply trial and error through splitting the intervals. I will come back to this topic later during the discussion of the branch-and-bound search.
+	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints or to apply trial and error through splitting the intervals \cite[p. 571]{handbookCP}. I will come back to this topic later during the discussion of the branch-and-bound search.
 	
 	\subsection{Constraint Types}
 	
