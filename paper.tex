@@ -27,6 +27,7 @@
 \usepackage{stfloats}
 \usepackage{url}
 \hyphenation{op-tical net-works semi-conduc-tor}
+\usepackage{tikz}
 \usepackage{listings}
 \usepackage{color}
 
@@ -108,7 +109,7 @@
 	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints or to apply trial and error through splitting the intervals \cite[p. 571]{handbookCP}. I will come back to this topic later during the discussion of the branch-and-bound search.
 	
 	\subsection{Constraint Types}
-	As already mentioned before constraint programming is the generalization of linear programming, therefore it is at least possible do define linear constraints like \ref{eq:linearConstraint}. Which statements are possible to make varies than very much from the programming language in which the problem is implemented and the used toolset. Typical constraints would be
+	As already mentioned before constraint programming is the generalization of linear programming, therefore it is at least possible do define linear constraints like [equation \ref{eq:linearConstraint}]. Which statements are possible to make varies than very much from the programming language in which the problem is implemented and the used toolset. Typical constraints would be
 	\begin{itemize}
 		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
 		\item Inequalities: $x \ne y$, \dots
@@ -124,7 +125,22 @@ rel(home, a+b*(c+d) == 0);
 	\end{equation}
 	what is a quite handy way to do it.
 	
-	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap. This problem can be expressed mathematically by \cite[p. 101]{programmingGecode}
+	\begin{figure}
+	\center
+	\begin{tikzpicture}
+		\draw (0, 0) rectangle (1, 1);
+		\node at (0, -0.3) {($x_1$, $y_1$)};
+		\draw[arrows=<->] (1.2, 0) -- (1.2, 1);
+		\node at (1.5, 0.5) {$d_1$};
+		\draw (1.5, 1.5) rectangle(2, 2);
+		\node at (1.5, 1.2) {($x_2$, $y_2$)};
+		\draw[arrows=<->] (2.2, 1.5) -- (2.2, 2);
+		\node at (2.5, 1.75) {$d_2$};
+	\end{tikzpicture}
+	\caption{two squares which should not overlap}
+	\label{fig:squares}
+	\end{figure}
+	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap [figure \ref{fig:squares}]. This problem can be expressed mathematically by \cite[p. 101]{programmingGecode}
 	\begin{equation}
 	\begin{split}
 		x_1 + d_1 \le x_2 & \lor x_2 + d_2 \le x_1 \lor \\
