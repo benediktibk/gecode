@@ -27,6 +27,29 @@
 \usepackage{stfloats}
 \usepackage{url}
 \hyphenation{op-tical net-works semi-conduc-tor}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=C++,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
 
 \begin{document}
 	\title{Constraint Programming - Inside Gecode}
@@ -48,9 +71,9 @@
 	\begin{equation}
 	\label{eq:linearConstraint}
 	\begin{split}
-		S \cdot 10^3 + E \cdot 10^2 + N \cdot 10^1 + D \cdot 10^0 + \\ 
-		M \cdot 10^3 + O \cdot 10^2 + R \cdot 10^1 + E \cdot 10^0 = \\ 
-		M \cdot 10^4 + O \cdot 10^3 + N \cdot 10^2 + E \cdot 10^1 + Y \cdot 10^0
+		& S \cdot 10^3 + E \cdot 10^2 + N \cdot 10^1 + D \cdot 10^0 + \\ 
+		& M \cdot 10^3 + O \cdot 10^2 + R \cdot 10^1 + E \cdot 10^0 = \\ 
+		& M \cdot 10^4 + O \cdot 10^3 + N \cdot 10^2 + E \cdot 10^1 + Y \cdot 10^0
 	\end{split}
 	\end{equation}		
 	
@@ -58,7 +81,11 @@
 	\begin{enumerate}
 	\item All variables must have different values.
 		\begin{equation}
-			S \ne E \land S \ne N \land S \ne D \land \dots \land E \ne N \land E \ne D \dots
+		\begin{split}
+			S \ne E \land S \ne N \land & S \ne D \land \dots \land \\
+			E \ne N \land & E \ne D \land \dots \land \\
+			& N \ne D \land \dots
+		\end{split}
 		\end{equation}	
 	\item There must not be a trailing zero. Combined with the so-called all-different constraint \cite{allDifferent} from above this results in
 		\begin{equation}
@@ -87,6 +114,31 @@
 		\item Inequalities: $x \ne y$, \dots
 		\item Relations: $x < 2 y$, $e^x < 4$, \dots
 	\end{itemize}
+	In Gecode for example it is very easy to create for example a nonlinear constraint based on the integer variables a, b, c and d \cite[p. 120]{programmingGecode}:
+	\begin{lstlisting}
+rel(home, a+b*(c+d) == 0);
+	\end{lstlisting}
+	This single statement in C++ implements the constraint
+	\begin{equation}
+		a + b \cdot (c + d) == 0
+	\end{equation}
+	what is a quite handy way to do it.
+	
+	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap. This problem can be expressed mathematically by \cite[p. 101]{programmingGecode}
+	\begin{equation}
+	\begin{split}
+		x_1 + d_1 \le x_2 & \lor x_2 + d_2 \le x_1 \lor \\
+		y_1 + d_1 \le y_2 & \lor y_2 + d_2 \le y_1
+	\end{split}
+	\end{equation}
+	and in Gecode by
+	\begin{lstlisting}
+rel(home,	(x1 + d1 <= x2) || 
+		(x2 + d2 <= x1) || 
+		(y1 + d1 <= y2) || 
+		(y2 + d2 <= y1));
+	\end{lstlisting}
+	which is again quite obvious to a reader with some experience in a C-like programming language.	
 	
 	\subsection{Constraint Propagation}
 	
@@ -104,6 +156,8 @@
 		F.~Benhamou, N.~Jussien, B.A.O'Sullivan, \emph{Trends in Constraint Programming}, Wiley-ISTE, 2007, ISBN: 978-1-905209-97-2
 		\bibitem{gecode}
 		http://www.gecode.org/
+		\bibitem{programmingGecode}
+		C.~Schulte, G.~Tack and M.Z.Lagerkvist, \emph{Modeling and Programming with Gecode}, http://www.gecode.org/doc-latest/MPG.pdf
 	\end{thebibliography}
 \end{document}
 
