@@ -46,6 +46,7 @@
 	\[SEND + MORE = MONEY\]
 	where every character is a variable and the position in the word describes the weight.
 	\begin{equation}
+	\label{eq:linearConstraint}
 	\begin{split}
 		S \cdot 10^3 + E \cdot 10^2 + N \cdot 10^1 + D \cdot 10^0 + \\ 
 		M \cdot 10^3 + O \cdot 10^2 + R \cdot 10^1 + E \cdot 10^0 = \\ 
@@ -80,6 +81,12 @@
 	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints or to apply trial and error through splitting the intervals \cite[p. 571]{handbookCP}. I will come back to this topic later during the discussion of the branch-and-bound search.
 	
 	\subsection{Constraint Types}
+	As already mentioned before constraint programming is the generalization of linear programming, therefore it is at least possible do define linear constraints like \ref{eq:linearConstraint}. Which statements are possible to make varies than very much from the programming language in which the problem is implemented and the used toolset. Typical constraints would be
+	\begin{itemize}
+		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
+		\item Inequalities: $x \ne y$, \dots
+		\item Relations: $x < 2 y$, $e^x < 4$, \dots
+	\end{itemize}
 	
 	\subsection{Constraint Propagation}
 	
