@@ -303,6 +303,7 @@ rel(home,	(x1 + d1 <= x2) ||
 	This algorithm is again a complete one, therefore it will always find the best solution if one exists. This algorithm does not inherit the bad memory characteristics from the Depth-First Search as only one solution is stored, but the search is still exhaustive and can be very slow, depending on the size of the variable domains.
 	
 	\subsubsection{Limited Discrepancy Search}
+	Limited Discrepancy Search is a variation of a more general Best-First Search and was first mentioned by Harvey and Ginsberg \cite{limitedDiscrepancy}. The basic concept is that during the iteration through a search tree it is better, in terms of execution time or, more formal, complexity, to fail closer to the root. If one constraint fails very close to the root only litte effort was put into this branch.
 	
 	\subsubsection{Branch-and-Bound Search}
 	
