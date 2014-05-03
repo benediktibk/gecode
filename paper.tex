@@ -117,21 +117,6 @@
 	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints or to apply trial and error through splitting the intervals \cite[p.~571]{handbookCP}. I will come back to this topic later during the discussion of the branch-and-bound search.
 	
 	\subsection{Constraint Types}
-	As already mentioned before constraint programming is the generalization of linear programming, therefore it is at least possible do define linear constraints like \refeq{eq:linearConstraint}. Which statements are possible to make varies than very much from the programming language in which the problem is implemented and the used toolset. Typical constraints would be
-	\begin{itemize}
-		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
-		\item Inequalities: $x \ne y$, \dots
-		\item Relations: $x < 2 y$, $e^x < 4$, \dots
-	\end{itemize}
-	In Gecode for example it is very easy to create for example a nonlinear constraint based on the integer variables a, b, c and d \cite[p.~120]{programmingGecode}:
-	\begin{lstlisting}
-rel(home, a+b*(c+d) == 0);
-	\end{lstlisting}
-	This single statement in C++ implements the constraint
-	\begin{equation}
-		a + b \cdot (c + d) == 0
-	\end{equation}
-	which is a quite handy way to do it.
 	
 	\begin{figure}
 	\center
@@ -148,6 +133,23 @@ rel(home, a+b*(c+d) == 0);
 	\caption{two squares which should not overlap}
 	\label{fig:squares}
 	\end{figure}
+	
+	As already mentioned before constraint programming is the generalization of linear programming, therefore it is at least possible do define linear constraints like \refeq{eq:linearConstraint}. Which statements are possible to make varies than very much from the programming language in which the problem is implemented and the used toolset. Typical constraints would be
+	\begin{itemize}
+		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
+		\item Inequalities: $x \ne y$, \dots
+		\item Relations: $x < 2 y$, $e^x < 4$, \dots
+	\end{itemize}
+	In Gecode for example it is very easy to create for example a nonlinear constraint based on the integer variables a, b, c and d \cite[p.~120]{programmingGecode}:
+	\begin{lstlisting}
+rel(home, a+b*(c+d) == 0);
+	\end{lstlisting}
+	This single statement in C++ implements the constraint
+	\begin{equation}
+		a + b \cdot (c + d) == 0
+	\end{equation}
+	which is a quite handy way to do it.
+	
 	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap \reffig{fig:squares}. This problem can be expressed mathematically by \cite[p. 101]{programmingGecode}
 	\begin{equation}
 	\begin{split}
@@ -247,7 +249,7 @@ rel(home,	(x1 + d1 <= x2) ||
 	\begin{equation}
 		c_1:\ x \le y
 	\end{equation}
-	Without constraint propagation and branching first on $x$ this results in search tree \reffig{fig:bigTree}. Obviously the right parts of these tree can already be pruned at the root with propagation of constraint $c_1$ and therefore it is not necessary to create and evaluate these subtrees \reffig{fig:smallTree}.
+	Without constraint propagation and branching first on $x$ this results in search tree \reffig{fig:bigTree}. Obviously the right parts of this tree can already be pruned already at the root by propagation of constraint $c_1$ and therefore it is not necessary to create and evaluate these subtrees \reffig{fig:smallTree}.
 	
 	The actual implementation of constraint propagation differs again from one toolset to another, but the basic concepts are for sure the same. As the topic of this paper is the implementation in Gecode I will concentrate on this one.
 	
@@ -269,11 +271,11 @@ rel(home,	(x1 + d1 <= x2) ||
 		&\dots
 	\end{split}
 	\end{equation}
-	Actually this behaviour is even very nice to have as it narrows the down the search space very efficient.
+	Actually this behaviour is very nice to have as it narrows the down the search space efficiently.
 	
 	To implement this repeated evaluation of constraints in Gecode all constraints subscribe to the domains of the variables which are part of them. With this method the constraints get noticed whenever a variable domain is reduced and they can signal the system that they need to be evaluated once again.
 	
-	The next difficult decision is which constraint should evaluated first. In the example above the constraints were quite simple and therefore it won't make a difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case Gecode sets for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. These means, whenever a variable domain is changed the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
+	The next difficult decision is which constraint should evaluated first. In the example above the constraints were quite simple and therefore it won't make a difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case Gecode sets for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
 	
 	\subsection{Search Algorithms}
 	
