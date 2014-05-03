@@ -292,16 +292,37 @@ rel(home,	(x1 + d1 <= x2) ||
 	In the following part I will discuss these searches and some additional, well known techniques, which can be applied during searches in constraint programming.
 	
 	\subsubsection{Depth-First Search}
-	The Depth-First Search is a good point to start, as it was also historical the first developed one. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for problems with such variable domains it is necessary to use for example a Branch-and-Bound Search.
+	\begin{algorithm}
+		\begin{algorithmic}
+			\Function{DFS}{node}
+				\If{$Goal(node)$}
+					\State \Return $node$
+				\EndIf
+				\State $s \gets Successors(node)$
+				\If{$Null(s)$}
+					\State \Return $nil$
+				\EndIf
+				\State $result \gets DFS(Left(s))$
+				\If{$result \ne nil$}
+					\State \Return $result$
+				\Else
+					\State \Return $DFS(Right(s))$
+				\EndIf
+			\EndFunction
+		\end{algorithmic}
+		\caption{Depth-first search in a binary search tree for one feasible solution, without constraint propagation}
+	\end{algorithm}
+	
+	The Depth-first search is a good point to start, as it was also historical the first developed one. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for problems with such variable domains it is necessary to use for example a Branch-and-Bound Search. Sometimes the Depth-First Search is also referred to as chronological backtrack search.
 	
 	The starting point is the root node, from where one the algorithm is called recursively. At every node mainly two steps are executed: First a constraint propagation and then a branching, which divides the search space into two disjoint sub spaces, on which the same algorithm is applied again. The search stops in a leave if either no branching is possible anymore and therefore a valid solution is found, or one or more variable domains are emptied, which indicates that in this leave no possible solution exists.
 	
 	This search is a so-called complete algorithm as it can be proven that all possible solutions will be found \cite[p.~85]{handbookCP}. Because of this characteristic it is very useful to proove for example that for a certain problem no solution exists. The main drawback obviously is the execution time, as it does an exhaustive search, and maybe even the memory usage if during the search many solutions are found.
 	
-	By stopping the search after one feasible solution is found the algorithm the search can often be accelerated. Although this slightly modified version is not complete anymore, in practice it is in some areas sufficient to know just one valid solution.
+	By stopping the search after one feasible solution is found the algorithm the Depth-first search can often be accelerated. Although this slightly modified version is not complete anymore, in practice it is in some areas sufficient to know just one valid solution.
 	
 	\subsubsection{Depth-First Search with Optimization}
-	If in the constraint programming is a certain objective is defined which should be either minimized or maximized a modified version of the Depth-First Search can be applied. The only difference is that it evalutes the objective function for every found solution concerning the constraints and stores during the search only the best one. To accelerate the search after one solution is already found it is possible to add an additional constraint which defines, that the new objective must be greater than the one related to the best solution till that point. Through this enhancement it is possible to prune even more sub trees and therefore to get the desired result faster.
+	If in the constraint programming is a certain objective is defined which should be either minimized or maximized a modified version of the Depth-first search can be applied. The only difference is that it evalutes the objective function for every found solution concerning the constraints and stores during the search only the best one. To accelerate the search after one solution is already found it is possible to add an additional constraint which defines, that the new objective must be greater than the one related to the best solution till that point. Through this enhancement it is possible to prune even more sub trees and therefore to get the desired result faster.
 	
 	This algorithm is again a complete one, therefore it will always find the best solution if one exists. This algorithm does not inherit the bad memory characteristics from the Depth-First Search as only one solution is stored, but the search is still exhaustive and can be very slow, depending on the size of the variable domains.
 	
@@ -310,7 +331,7 @@ rel(home,	(x1 + d1 <= x2) ||
 	\subsubsection{Branching Strategies}
 	
 	\subsubsection{Limited Discrepancy Search}
-	Limited Discrepancy Search falls into the category of Best-First searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy} and it depends on some heurisitics for the tree, which is determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive and second heurisitics work worse the farther away from the solution they are. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy Search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement ahead of a chronological backtrack were shown by experimental results and theoretical proven in \cite{limitedDiscrepancy}.
+	Limited Discrepancy Search falls into the category of Best-first searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy} and it depends on some heurisitics for the tree, which is determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive and second heurisitics work worse the farther away from the solution they are. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy Search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement ahead of a chronological backtrack were shown by experimental results and theoretical proven in \cite{limitedDiscrepancy}.
 	
 	\begin{algorithm}
 		\begin{algorithmic}
@@ -333,7 +354,7 @@ rel(home,	(x1 + d1 <= x2) ||
 				\EndIf
 			\EndFunction
 		\end{algorithmic}
-		\caption{Probe for Limited Discrepancy Search for a binary search tree from \cite{limitedDiscrepancy}}
+		\caption{Probe of Limited Discrepancy Search for a binary search tree from \cite{limitedDiscrepancy}, without constraint propagation}
 	\end{algorithm}
 	
 	\begin{algorithm}
@@ -347,7 +368,7 @@ rel(home,	(x1 + d1 <= x2) ||
 				\EndFor
 			\EndFunction
 		\end{algorithmic}
-		\caption{Limited Discrepancy Search for a binary search tree from \cite{limitedDiscrepancy}}
+		\caption{Limited Discrepancy Search for a binary search tree from \cite{limitedDiscrepancy}, without constraint propagation}
 	\end{algorithm}
 	
 	\subsubsection{Backjumping}
