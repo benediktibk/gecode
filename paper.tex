@@ -188,7 +188,7 @@ rel(home,	(x1 + d1 <= x2) ||
 		\node[rectangle,draw] at (-3.6, 1) (levelThreeElementOne) {$y = 1$};
 		\coordinate[left=0.2cm of levelTwoElementOne.south] (levelTwoElementOnePointOne);
   		\path[arrow] (levelThreeElementOne) -- (levelTwoElementOnePointOne);
-		\node[rectangle,draw] at (-3.6, 0) (levelFourElementOne) {$c_2 \lightning$};
+		\node[rectangle,draw] at (-3.6, 0) (levelFourElementOne) {\Checkmark};
   		\path[arrow] (levelFourElementOne) -- (levelThreeElementOne);
 		\node[rectangle,draw] at (-2.4, 1) (levelThreeElementTwo) {$y = 2$};
 		\coordinate[right=0.2cm of levelTwoElementOne.south] (levelTwoElementOnePointTwo);
@@ -222,14 +222,32 @@ rel(home,	(x1 + d1 <= x2) ||
 	\label{fig:bigTree}
 	\end{figure}
 	
-	To visualize this effect consider a constraint problem based on two variables $x \in \{1, 5, 6\}$ and $y \in \{1, 2\}$ and two constraints based on them.
+	\begin{figure}
+	\center
+	\begin{tikzpicture}
+		\tikzstyle{arrow}=[draw, -latex]
+		\node[rectangle,draw] at (0, 2) (levelOne) {$x \in \{1\} \land y \in \{1, 2\}$};
+  		
+		\node[rectangle,draw] at (-1, 1) (levelTwoElementOne) {$y = 1$};
+		\coordinate[left=0.2cm of levelOne.south] (levelOnePointOne);
+  		\path[arrow] (levelTwoElementOne) -- (levelOnePointOne);
+		\node[rectangle,draw] at (-1, 0) (levelThreeElementOne) {\Checkmark};
+  		\path[arrow] (levelThreeElementOne) -- (levelTwoElementOne);
+		\node[rectangle,draw] at (1, 1) (levelTwoElementTwo) {$y = 2$};
+		\coordinate[right=0.2cm of levelOne.south] (levelOnePointTwo);
+  		\path[arrow] (levelTwoElementTwo) -- (levelOnePointTwo);
+		\node[rectangle,draw] at (1, 0) (levelThreeElementTwo) {\Checkmark};
+  		\path[arrow] (levelThreeElementTwo) -- (levelTwoElementTwo);
+	\end{tikzpicture}
+	\caption{search tree with constraint propagation}
+	\label{fig:smallTree}
+	\end{figure}
+	
+	To visualize this effect consider a constraint problem based on two variables $x \in \{1, 5, 6\}$ and $y \in \{1, 2\}$ and one constraint based on them.
 	\begin{equation}
 		c_1:\ x \le y
 	\end{equation}
-	\begin{equation}
-		c_2:\ x + y = 3
-	\end{equation}
-	Without constraint propagation and branching first on $x$ this results in search tree \reffig{fig:bigTree}.
+	Without constraint propagation and branching first on $x$ this results in search tree \reffig{fig:bigTree}. Obviously the right parts of these tree can already be pruned at the root with propagation of constraint $c_1$ and therefore it is not necessary to create and evaluate these subtrees \reffig{fig:smallTree}.
 	
 	The actual implementation of constraint propagation differs again from one toolset to another, but the basic concepts are for sure the same. As the topic of this paper is the implementation in Gecode I will concentrate on this one.
 	
