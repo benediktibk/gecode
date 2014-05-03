@@ -297,17 +297,19 @@ rel(home,	(x1 + d1 <= x2) ||
 	
 	This search is a so-called complete algorithm as it can be proven that all possible solutions will be found \cite[p.~85]{handbookCP}. Because of this characteristic it is very useful to proove for example that for a certain problem no solution exists. The main drawback obviously is the execution time, as it does an exhaustive search, and maybe even the memory usage if during the search many solutions are found.
 	
+	By stopping the search after one feasible solution is found the algorithm the search can often be accelerated. Although this slightly modified version is not complete anymore, in practice it is in some areas sufficient to know just one valid solution.
+	
 	\subsubsection{Depth-First Search with Optimization}
 	If in the constraint programming is a certain objective is defined which should be either minimized or maximized a modified version of the Depth-First Search can be applied. The only difference is that it evalutes the objective function for every found solution concerning the constraints and stores during the search only the best one. To accelerate the search after one solution is already found it is possible to add an additional constraint which defines, that the new objective must be greater than the one related to the best solution till that point. Through this enhancement it is possible to prune even more sub trees and therefore to get the desired result faster.
 	
 	This algorithm is again a complete one, therefore it will always find the best solution if one exists. This algorithm does not inherit the bad memory characteristics from the Depth-First Search as only one solution is stored, but the search is still exhaustive and can be very slow, depending on the size of the variable domains.
 	
-	\subsubsection{Limited Discrepancy Search}
-	Limited Discrepancy Search is a variation of a more general Best-First Search and was first mentioned by Harvey and Ginsberg \cite{limitedDiscrepancy}. The basic concept is that during the iteration through a search tree it is better, in terms of execution time or, more formal, complexity, to fail closer to the root. If one constraint fails very close to the root only litte effort was put into this branch.
-	
 	\subsubsection{Branch-and-Bound Search}
 	
 	\subsubsection{Branching Strategies}
+	
+	\subsubsection{Limited Discrepancy Search}
+	Limited Discrepancy Search falls into the category of Best-First searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy} and it depends on some heurisitics for the tree, which is determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive and second heurisitics work worse the farther away from the solution they are. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy Search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement ahead of a chronological backtrack were shown by experimental results and theoretical proven in \cite{limitedDiscrepancy}.
 	
 	\subsubsection{Backjumping}
 	
