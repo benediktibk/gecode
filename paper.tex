@@ -384,6 +384,7 @@ rel(home,	(x1 + d1 <= x2) ||
 	\end{algorithm}
 	
 	\subsubsection{Backjumping}
+	A specific version of backjumping was already mentioned, the Limited Discrepancy Search, where instead of jumping one node back the algorithm always jumps as far back to the root node as possible. In general this is proven to be better than the chronological backtracking \cite{limitedDiscrepancy}, but for certain problems it may be possible to find better points to jump back. A jump back in the search tree means to detect a so-called nogood decision, which caused the violation of a constraint in the deadend. How these nogoods must be selected and stored to improve the search depends heavily on the specific field and if it is down wrong the backjumping can even be less efficient than chronological backtracking \cite[p.~100]{handbookCP}.
 	
 	\subsubsection{Restart Strategies}
 	
