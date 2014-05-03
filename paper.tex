@@ -291,6 +291,18 @@ rel(home,	(x1 + d1 <= x2) ||
 	
 	In the following part I will discuss these searches and some additional, well known techniques, which can be applied during searches in constraint programming.
 	
+	\subsubsection{Branching Strategies}
+	If at one node it is not possible to empty one variable domain or to reduce all variable domains to the size one it is necessary to make a decision: How should be the next subtree be build? The question is answered by the selected branching strategy, which depends on the variable domain. For Integer (and Bool) Variables there are three possible strategies \cite[p.~87]{handbookCP} which differ in how the domain is distributed to the subtrees. All the strategies have in common that they create additional temporary constraints, which are only valid for the specific subtree. The temporay addition of constraints is called \emph{posting}.
+	\begin{itemize}
+	\item Enumeration: The domain for $x \in D = {x_1, x_2, \dots}$ is split up into $|D|$-branches where for every branch $i$ one additional constraint $c:\ x = x_i$ is posted.
+	\item Binary choice points: One value $x_i$ of the domain $D$ of the variable $x$ is selected and the domain is split up into two subtrees: On one the constraint $x = x_i$ and on the other one the constraint $x \ne x_i$ is posted. This results into something like a binary tree at this point.
+	\item Domain splitting: The domain $D$ for the variable $x$ is split up into two disjoint intervals or sets, for example $x < 2$ and $x \ge 2$.
+	\end{itemize}
+	
+	Obviously for variables with a Float domain the Enumeration and Binary choice points are not feasible, but the last one, domain splitting, is typically used. As termination criteria for a Float it is often necessary to define a epsilon which describes the interval length, at which the solver states to have found a solution.
+	
+	For all branching strategies there is a big choice of freedom left, which can be used to implement some heuristics. This additional information is either gained during the search itself of pre defined by the user.
+	
 	\subsubsection{Depth-First Search}
 	\begin{algorithm}
 		\begin{algorithmic}
@@ -328,10 +340,8 @@ rel(home,	(x1 + d1 <= x2) ||
 	
 	\subsubsection{Branch-and-Bound Search}
 	
-	\subsubsection{Branching Strategies}
-	
 	\subsubsection{Limited Discrepancy Search}
-	Limited Discrepancy Search falls into the category of Best-first searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy} and it depends on some heurisitics for the tree, which is determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive and second heurisitics work worse the farther away from the solution they are. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy Search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement ahead of a chronological backtrack were shown by experimental results and theoretical proven in \cite{limitedDiscrepancy}.
+	Limited Discrepancy Search falls into the category of Best-first searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy} and it depends on some heurisitics for the tree, which are determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive and second heurisitics work worse the farther away from the solution they are. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy Search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement compared to a chronological backtrack was shown by experimental results and theoretical proven in \cite{limitedDiscrepancy}.
 	
 	\begin{algorithm}
 		\begin{algorithmic}
