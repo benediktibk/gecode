@@ -271,11 +271,11 @@ rel(home,	(x1 + d1 <= x2) ||
 		&\dots
 	\end{split}
 	\end{equation}
-	Actually this behaviour is very nice to have as it narrows the down the search space efficiently.
+	Actually this behaviour is very nice to have as it narrows efficiently the search space down.
 	
 	To implement this repeated evaluation of constraints in Gecode all constraints subscribe to the domains of the variables which are part of them. With this method the constraints get noticed whenever a variable domain is reduced and they can signal the system that they need to be evaluated once again.
 	
-	The next difficult decision is which constraint should evaluated first. In the example above the constraints were quite simple and therefore it won't make a difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case Gecode sets for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
+	The next difficult decision is which constraint should be evaluated first. In the example above the constraints were quite simple and therefore it won't make a big difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case Gecode defines for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
 	
 	\subsection{Search Algorithms}
 	
