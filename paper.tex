@@ -17,7 +17,6 @@
 \DeclareGraphicsExtensions{.png}
 \usepackage[cmex10]{amsmath}
 \interdisplaylinepenalty=2500
-\usepackage{algorithmic}
 \usepackage{array}
 \usepackage{mdwmath}
 \usepackage{mdwtab}
@@ -29,6 +28,8 @@
 \hyphenation{op-tical net-works semi-conduc-tor}
 \usepackage{stmaryrd}
 \usepackage{bbding}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
 \usepackage{tikz}
 \usetikzlibrary{shapes}
 \usetikzlibrary{calc}
@@ -310,6 +311,44 @@ rel(home,	(x1 + d1 <= x2) ||
 	
 	\subsubsection{Limited Discrepancy Search}
 	Limited Discrepancy Search falls into the category of Best-First searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy} and it depends on some heurisitics for the tree, which is determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive and second heurisitics work worse the farther away from the solution they are. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy Search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement ahead of a chronological backtrack were shown by experimental results and theoretical proven in \cite{limitedDiscrepancy}.
+	
+	\begin{algorithm}
+		\begin{algorithmic}
+			\Function{$LDSProbe$}{$node$, $k$}
+				\If{$Goal(node)$}
+				    \State \Return $node$
+				\EndIf
+				\State $s \gets Successors(node)$
+				\If{$Null(s)$}
+					\State \Return $nil$
+				\EndIf
+				\If{$k = 0$}
+					\State \Return $LDSProbe(Left(s), 0)$
+				\Else
+					\State $result \gets LDSProbe(Right(s), k - 1)$
+					\If{$result \ne nil$}
+						\State \Return $result$
+					\EndIf
+					\State \Return $LDSProbe(Left(s), k)$
+				\EndIf
+			\EndFunction
+		\end{algorithmic}
+		\caption{Probe for Limited Discrepancy Search for a binary search tree from \cite{limitedDiscrepancy}}
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\begin{algorithmic}			
+			\Function{$LDS$}{$node$}
+				\For{$x \gets 0\ \text{to maximum depth}$}
+					\State $result \gets LDSProbe(node, x)$
+					\If{$result \ne nil$}
+						\State \Return $result$
+					\EndIf
+				\EndFor
+			\EndFunction
+		\end{algorithmic}
+		\caption{Limited Discrepancy Search for a binary search tree from \cite{limitedDiscrepancy}}
+	\end{algorithm}
 	
 	\subsubsection{Backjumping}
 	
