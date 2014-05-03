@@ -278,21 +278,58 @@ rel(home,	(x1 + d1 <= x2) ||
 	The next difficult decision is which constraint should be evaluated first. In the example above the constraints were quite simple and therefore it won't make a big difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case Gecode defines for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
 	
 	\subsection{Search Algorithms}
+	In constraint programming search algorithm define the way the search tree is constructed, starting from the root node. To improve the performance of the search usually at every newly created node a constraint propagation is executed to narrow the search space down. Based on these two steps then either one, the best or no solution is found. What the actual result in the end is depends obviously on the search algorithm.
+	
+	In Gecode it is possible to define its own search strategies, but the user is supported at this point with some standard engines which can be used to build custom ones:
+	\begin{itemize}
+	\item Depth-First Search
+	\item Limited Discrepancy Search
+	\item Branch-and-Bound Search
+	\item Depth-First Search Restart Optimization
+	\end{itemize}
+	
+	In the following part I will discuss these searches and some additional, well known techniques, which can be applied during searches in constraint programming.
+	
+	\subsubsection{Depth-First Search}
+	The Depth-First Search is a good point to start, as it was also historical the first developed one. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for such problems with such variable domains it is necessary to use for example a Branch-and-Bound Search.
+	
+	The starting point is the root node, from where one the algorithm is called recursively. At every node mainly two steps are executed: First a constraint propagation and then a branching, which divides the search space into two disjoint sub spaces, on which the same algorithm is applied again. The search stops in a leave if either no branching is possible anymore and therefore a valid solution is found, or one or more variable domains are emptied, which indicates that in this leave no possible solution exists.
+	
+	This search is a so-called complete algorithm as it can be proven that all possible solutions will be found \cite[p.~85]{handbookCP}. Because of this characteristic it is very useful to proove for example that for a certain problem no solution exists. The main drawback obviously is the execution time, as it does an exhaustive search, and maybe even the memory usage if during the search many solutions are found.
+	
+	\subsubsection{Depth-First Search with Optimization}
+	If in the constraint programming is a certain objective is defined which should be either minimized or maximized a modified version of the Depth-First Search can be applied. The only difference is that it evalutes the objective function for every found solution concerning the constraints and stores during the search only the best one. To accelerate the search after one solution is already found it is possible to add an additional constraint which defines, that the new objective must be greater than the one related to the best solution till that point. Through this enhancement it is possible to prune even more sub trees and therefore to get the desired result faster.
+	
+	This algorithm is again a complete one, therefore it will always find the best solution if one exists. This algorithm does not inherit the bad memory characteristics from the Depth-First Search as only one solution is stored, but the search is still exhaustive and can be very slow, depending on the size of the variable domains.
+	
+	\subsubsection{Limited Discrepancy Search}
+	
+	\subsubsection{Branch-and-Bound Search}
+	
+	\subsubsection{Branching Strategies}
+	
+	\subsubsection{Backtracking}
+	
+	\subsubsection{Backjumping}
+	
+	\subsubsection{Restart Strategies}
 	
 	\section{Conclusion}
 	\textit{conclusion}
 	
 	\begin{thebibliography}{1}
 		\bibitem{handbookCP}
-		F.~Rossi, P.van~Beek and T.Walsh, \emph{Handbook of Constraint Programming}, Amsterdam, The Netherlands: Elsevier, 2006, ISBN: 978-0-444-52726-4
+		F.~Rossi, P.~van~Beek and T.~Walsh, \emph{Handbook of Constraint Programming}, Amsterdam, The Netherlands: Elsevier, 2006, ISBN: 978-0-444-52726-4
 		\bibitem{allDifferent}
 		W.~van~Hoeve, \emph{The Alldifferent Constraint: A Survey}, http://www.andrew.cmu.edu/user/vanhoeve/papers/alldiff.pdf
 		\bibitem{trendsInCP}
-		F.~Benhamou, N.~Jussien, B.A.O'Sullivan, \emph{Trends in Constraint Programming}, Wiley-ISTE, 2007, ISBN: 978-1-905209-97-2
+		F.~Benhamou, N.~Jussien, B.~A.~O'Sullivan, \emph{Trends in Constraint Programming}, Wiley-ISTE, 2007, ISBN: 978-1-905209-97-2
 		\bibitem{gecode}
 		http://www.gecode.org/
 		\bibitem{programmingGecode}
-		C.~Schulte, G.~Tack and M.Z.Lagerkvist, \emph{Modeling and Programming with Gecode}, http://www.gecode.org/doc-latest/MPG.pdf
+		C.~Schulte, G.~Tack and M.~Z.~Lagerkvist, \emph{Modeling and Programming with Gecode}, http://www.gecode.org/doc-latest/MPG.pdf
+		\bibitem{limitedDiscrepancy}
+		W.~D.~Harvey, M.~L.~Ginsberg, \emph{Limited Discrepancy Search}, Morgan Kaufmann, 1995
 	\end{thebibliography}
 \end{document}
 
