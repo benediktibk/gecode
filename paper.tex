@@ -291,7 +291,7 @@ rel(home,	(x1 + d1 <= x2) ||
 	In the following part I will discuss these searches and some additional, well known techniques, which can be applied during searches in constraint programming.
 	
 	\subsubsection{Depth-First Search}
-	The Depth-First Search is a good point to start, as it was also historical the first developed one. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for such problems with such variable domains it is necessary to use for example a Branch-and-Bound Search.
+	The Depth-First Search is a good point to start, as it was also historical the first developed one. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for problems with such variable domains it is necessary to use for example a Branch-and-Bound Search.
 	
 	The starting point is the root node, from where one the algorithm is called recursively. At every node mainly two steps are executed: First a constraint propagation and then a branching, which divides the search space into two disjoint sub spaces, on which the same algorithm is applied again. The search stops in a leave if either no branching is possible anymore and therefore a valid solution is found, or one or more variable domains are emptied, which indicates that in this leave no possible solution exists.
 	
@@ -308,8 +308,6 @@ rel(home,	(x1 + d1 <= x2) ||
 	\subsubsection{Branch-and-Bound Search}
 	
 	\subsubsection{Branching Strategies}
-	
-	\subsubsection{Backtracking}
 	
 	\subsubsection{Backjumping}
 	
