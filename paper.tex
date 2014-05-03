@@ -27,7 +27,12 @@
 \usepackage{stfloats}
 \usepackage{url}
 \hyphenation{op-tical net-works semi-conduc-tor}
+\usepackage{stmaryrd}
+\usepackage{bbding}
 \usepackage{tikz}
+\usetikzlibrary{shapes}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
 \usepackage{listings}
 \usepackage{color}
 
@@ -52,6 +57,9 @@
   tabsize=3
 }
 
+\newcommand{\reffig}[1]{{[Fig.~\ref{#1}.]}}
+\newcommand{\refeq}[1]{{[Eq.~\ref{#1}.]}}
+
 \begin{document}
 	\title{Constraint Programming - Inside Gecode}
 	\author{Benedikt~Schmidt}
@@ -64,7 +72,7 @@
 	\end{abstract}
 	
 	\section{Introduction}
-	Constraint programming is a tool to solve mathematical problems through the formulation of constraints, which describe the desired solution. As typically a foraml and exact definition, like it can be found in \cite[p. 16]{handbookCP} for constraint propagation, is not as helpful as an example, I would like to give you a short overview on the topic through the well known problem \emph{SEND MORE MONEY}.
+	Constraint programming is a tool to solve mathematical problems through the formulation of constraints, which describe the desired solution. As typically a foraml and exact definition, like it can be found in \cite[p.~16]{handbookCP} for constraint propagation, is not as helpful as an example, I would like to give you a short overview on the topic through the well known problem \emph{SEND MORE MONEY}.
 	
 	Consider the problem
 	\[SEND + MORE = MONEY\]
@@ -94,7 +102,7 @@
 		\end{equation}
 	\end{enumerate}
 	
-	Now a solver for constraint programming like Gecode provides the necessary tools to define these constraints in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected search algorithm. Actually this example contains only linear constraints and could therefore be solved through linear programming. As linear programming is only a subset of constraint programming the latter one is often the more useful one, because not every problem in the real world is linear or can be linearized in a useful way. Consequently constraint programming with its ability to consider constraints in there most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p. 221]{trendsInCP}.
+	Now a solver for constraint programming like Gecode provides the necessary tools to define these constraints in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected search algorithm. Actually this example contains only linear constraints and could therefore be solved through linear programming. As linear programming is only a subset of constraint programming the latter one is often the more useful one, because not every problem in the real world is linear or can be linearized in a useful way. Consequently constraint programming with its ability to consider constraints in there most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
 	
 	In the following I will describe the necessary steps to solve a problem with constraint programming and as example of an implementation I will always refer to \emph{Gecode} \cite{gecode}.
 	
@@ -106,16 +114,16 @@
 		\item Bool: $x \in \{\text{true}, \text{false}\}$
 		\item Float: $x \in [-4, 3]$, $x \in [-10, 8] \cup [10, 12]$, \dots
 	\end{itemize}
-	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints or to apply trial and error through splitting the intervals \cite[p. 571]{handbookCP}. I will come back to this topic later during the discussion of the branch-and-bound search.
+	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints or to apply trial and error through splitting the intervals \cite[p.~571]{handbookCP}. I will come back to this topic later during the discussion of the branch-and-bound search.
 	
 	\subsection{Constraint Types}
-	As already mentioned before constraint programming is the generalization of linear programming, therefore it is at least possible do define linear constraints like [equation \ref{eq:linearConstraint}]. Which statements are possible to make varies than very much from the programming language in which the problem is implemented and the used toolset. Typical constraints would be
+	As already mentioned before constraint programming is the generalization of linear programming, therefore it is at least possible do define linear constraints like \refeq{eq:linearConstraint}. Which statements are possible to make varies than very much from the programming language in which the problem is implemented and the used toolset. Typical constraints would be
 	\begin{itemize}
 		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
 		\item Inequalities: $x \ne y$, \dots
 		\item Relations: $x < 2 y$, $e^x < 4$, \dots
 	\end{itemize}
-	In Gecode for example it is very easy to create for example a nonlinear constraint based on the integer variables a, b, c and d \cite[p. 120]{programmingGecode}:
+	In Gecode for example it is very easy to create for example a nonlinear constraint based on the integer variables a, b, c and d \cite[p.~120]{programmingGecode}:
 	\begin{lstlisting}
 rel(home, a+b*(c+d) == 0);
 	\end{lstlisting}
@@ -140,7 +148,7 @@ rel(home, a+b*(c+d) == 0);
 	\caption{two squares which should not overlap}
 	\label{fig:squares}
 	\end{figure}
-	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap [figure \ref{fig:squares}]. This problem can be expressed mathematically by \cite[p. 101]{programmingGecode}
+	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap \reffig{fig:squares}. This problem can be expressed mathematically by \cite[p. 101]{programmingGecode}
 	\begin{equation}
 	\begin{split}
 		x_1 + d_1 \le x_2 & \lor x_2 + d_2 \le x_1 \lor \\
@@ -159,31 +167,95 @@ rel(home,	(x1 + d1 <= x2) ||
 	\subsection{Constraint Propagation}
 	Constraint propagation is a key concept in constraint programming as it allows to speed-up the search significantly. The term propagation refers in this area to the reduction of domains of variables which are infeasible, considering other constraints and affected variable domains. As the size of the variable domain is related to possibilities which have to be checked by a search, the constraint propagation is able to prune infeasible subtrees. Therefore the whole search process is accelerated.
 	
-	The actual implementation of constraint propagation differs again from one toolset to another, but the basic concepts are for sure the same. As the topic of this paper is the implementation in Gecode I will concentrate on this one.
+	\begin{figure}
+	\center
+	\begin{tikzpicture}
+		\tikzstyle{arrow}=[draw, -latex]
+		\node[rectangle,draw] at (0, 3) (levelOne) {$x \in \{1, 5, 6\} \land y \in \{1, 2\}$};
+		
+		\node[rectangle,draw] at (-3, 2) (levelTwoElementOne) {$x = 1$};
+		\coordinate[left=1.5cm of levelOne.south] (levelOnePointOne);
+  		\path[arrow] (levelTwoElementOne) -- (levelOnePointOne);
+  		
+		\node[rectangle,draw] at (0, 2) (levelTwoElementTwo) {$x = 5$};
+		\coordinate[left=0cm of levelOne.south] (levelOnePointTwo);
+  		\path[arrow] (levelTwoElementTwo) -- (levelOnePointTwo);
+  		
+		\node[rectangle,draw] at (3, 2) (levelTwoElementThree) {$x = 6$};
+		\coordinate[right=1.5cm of levelOne.south] (levelOnePointThree);
+  		\path[arrow] (levelTwoElementThree) -- (levelOnePointThree);
+  		
+		\node[rectangle,draw] at (-3.6, 1) (levelThreeElementOne) {$y = 1$};
+		\coordinate[left=0.2cm of levelTwoElementOne.south] (levelTwoElementOnePointOne);
+  		\path[arrow] (levelThreeElementOne) -- (levelTwoElementOnePointOne);
+		\node[rectangle,draw] at (-3.6, 0) (levelFourElementOne) {$c_2 \lightning$};
+  		\path[arrow] (levelFourElementOne) -- (levelThreeElementOne);
+		\node[rectangle,draw] at (-2.4, 1) (levelThreeElementTwo) {$y = 2$};
+		\coordinate[right=0.2cm of levelTwoElementOne.south] (levelTwoElementOnePointTwo);
+  		\path[arrow] (levelThreeElementTwo) -- (levelTwoElementOnePointTwo);
+		\node[rectangle,draw] at (-2.4, 0) (levelFourElementTwo) {\Checkmark};
+  		\path[arrow] (levelFourElementTwo) -- (levelThreeElementTwo);
+  		
+		\node[rectangle,draw] at (-0.6, 1) (levelThreeElementThree) {$y = 1$};
+		\coordinate[left=0.2cm of levelTwoElementTwo.south] (levelTwoElementTwoPointOne);
+  		\path[arrow] (levelThreeElementThree) -- (levelTwoElementTwoPointOne);
+		\node[rectangle,draw] at (-0.6, 0) (levelFourElementThree) {$c_1 \lightning$};
+  		\path[arrow] (levelFourElementThree) -- (levelThreeElementThree);
+		\node[rectangle,draw] at (0.6, 1) (levelThreeElementFour) {$y = 2$};
+		\coordinate[right=0.2cm of levelTwoElementTwo.south] (levelTwoElementTwoPointTwo);
+  		\path[arrow] (levelThreeElementFour) -- (levelTwoElementTwoPointTwo);
+		\node[rectangle,draw] at (0.6, 0) (levelFourElementFour) {$c_1 \lightning$};
+  		\path[arrow] (levelFourElementFour) -- (levelThreeElementFour);
+  		
+		\node[rectangle,draw] at (2.4, 1) (levelThreeElementFive) {$y = 1$};
+		\coordinate[left=0.2cm of levelTwoElementThree.south] (levelTwoElementThreePointOne);
+  		\path[arrow] (levelThreeElementFive) -- (levelTwoElementThreePointOne);
+		\node[rectangle,draw] at (2.4, 0) (levelFourElementFive) {$c_1 \lightning$};
+  		\path[arrow] (levelFourElementFive) -- (levelThreeElementFive);
+		\node[rectangle,draw] at (3.6, 1) (levelThreeElementSix) {$y = 2$};
+		\coordinate[right=0.2cm of levelTwoElementThree.south] (levelTwoElementThreePointTwo);
+  		\path[arrow] (levelThreeElementSix) -- (levelTwoElementThreePointTwo);
+		\node[rectangle,draw] at (3.6, 0) (levelFourElementSix) {$c_1 \lightning$};
+  		\path[arrow] (levelFourElementSix) -- (levelThreeElementSix);
+	\end{tikzpicture}
+	\caption{search tree without constraint propagation}
+	\label{fig:bigTree}
+	\end{figure}
 	
-	Constraints in Gecode are always evaluated ahead of a further growth of a subtree, as it may be possible to prune some of the subtrees. The problem here is to decide in which order the constraints should be considered, and it may even be necessary to evaluate some constraints more often. A short example will explain this very well \cite[p. 575]{handbookCP}: Let there be two constraints 
+	To visualize this effect consider a constraint problem based on two variables $x \in \{1, 5, 6\}$ and $y \in \{1, 2\}$ and two constraints based on them.
 	\begin{equation}
-	c_1: y - x^2 = 0
+		c_1:\ x \le y
 	\end{equation}
 	\begin{equation}
-	c_2: y - x - 1 = 0
+		c_2:\ x + y = 3
+	\end{equation}
+	Without constraint propagation and branching first on $x$ this results in search tree \reffig{fig:bigTree}.
+	
+	The actual implementation of constraint propagation differs again from one toolset to another, but the basic concepts are for sure the same. As the topic of this paper is the implementation in Gecode I will concentrate on this one.
+	
+	Constraints in Gecode are always evaluated ahead of a further growth of a subtree, as it may be possible to prune some of the subtrees. The problem here is to decide in which order the constraints should be considered, and it may even be necessary to evaluate some constraints more often. A short example will explain this very well \cite[p.~575]{handbookCP}: Let there be two constraints 
+	\begin{equation}
+		c_1: y - x^2 = 0
+	\end{equation}
+	\begin{equation}
+		c_2: y - x - 1 = 0
 	\end{equation}
 	and let the variable domains be $x, y \in [-4, 4]$. Starting with the evaluation of constraint one follows a chain of reductions of the variable domains, based only on constraint propagation:
 	\begin{equation}
 	\begin{split}
-	c_1:\ &y \in [-4, 4] \rightarrow y \in [0, 4] \\
-	c_1:\ &x \in [-4, 4] \rightarrow x \in [-2, 2] \\
-	c_2:\ &y \in [0, 4] \rightarrow y \in [0, 3] \\
-	c_2:\ &x \in [-2, 2] \rightarrow x \in [-1, 2] \\
-	c_1:\ &x \in [-1, 2] \rightarrow x \in [-1, 1.73 \dots] \\
-	&\dots
+		c_1:\ &y \in [-4, 4] \rightarrow y \in [0, 4] \\
+		c_1:\ &x \in [-4, 4] \rightarrow x \in [-2, 2] \\
+		c_2:\ &y \in [0, 4] \rightarrow y \in [0, 3] \\
+		c_2:\ &x \in [-2, 2] \rightarrow x \in [-1, 2] \\
+		c_1:\ &x \in [-1, 2] \rightarrow x \in [-1, 1.73 \dots] \\
+		&\dots
 	\end{split}
 	\end{equation}
 	Actually this behaviour is even very nice to have as it narrows the down the search space very efficient.
 	
 	To implement this repeated evaluation of constraints in Gecode all constraints subscribe to the domains of the variables which are part of them. With this method the constraints get noticed whenever a variable domain is reduced and they can signal the system that they need to be evaluated once again.
 	
-	The next difficult decision is which constraint should evaluated first. In the example above the constraints were quite simple and therefore it won't make a difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case Gecode sets for every constraint a certain cost \cite[p. 275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. These means, whenever a variable domain is changed the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
+	The next difficult decision is which constraint should evaluated first. In the example above the constraints were quite simple and therefore it won't make a difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case Gecode sets for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. These means, whenever a variable domain is changed the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
 	
 	\subsection{Search Algorithms}
 	
