@@ -69,7 +69,7 @@
 	\maketitle	
 	
 	\begin{abstract}	
-		Gecode is one of the various tools for constraint programming, a well-studied area which aims to solve arbitrary combinatorial and optimzation problems. The basement for Gecode are variables, their domains, constraints on these variables and strategies to search for a solution space or only single solutions.
+		\emph{Gecode} is one of the various tools for constraint programming, a well-studied area which aims to solve arbitrary combinatorial and optimzation problems. The basement for \emph{Gecode} are variables, their domains, constraints on these variables and strategies to search for a solution space or only single solutions.
 	\end{abstract}
 	
 	\section{Introduction}
@@ -103,7 +103,7 @@
 		\end{equation}
 	\end{enumerate}
 	
-	Now a solver for constraint programming like Gecode provides the necessary tools to define these constraints in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected search algorithm. Actually this example contains only linear constraints and could therefore be solved through linear programming. As linear programming is only a subset of constraint programming the latter one is often the more useful one, because not every problem in the real world is linear or can be linearized in a useful way. Consequently constraint programming with its ability to consider constraints in there most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
+	Now a solver for constraint programming like \emph{Gecode} provides the necessary tools to define these constraints in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected search algorithm. Actually this example contains only linear constraints and could therefore be solved through linear programming. As linear programming is only a subset of constraint programming the latter one is often the more useful one, because not every problem in the real world is linear or can be linearized in a useful way. Consequently constraint programming with its ability to consider constraints in there most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
 	
 	In the following I will describe the necessary steps to solve a problem with constraint programming and as example of an implementation I will always refer to \emph{Gecode} \cite{gecode}.
 	
@@ -141,7 +141,7 @@
 		\item Inequalities: $x \ne y$, \dots
 		\item Relations: $x < 2 y$, $e^x < 4$, \dots
 	\end{itemize}
-	In Gecode for example it is very easy to create for example a nonlinear constraint based on the integer variables a, b, c and d \cite[p.~120]{programmingGecode}:
+	In \emph{Gecode} for example it is very easy to create for example a nonlinear constraint based on the integer variables a, b, c and d \cite[p.~120]{programmingGecode}:
 	\begin{lstlisting}
 rel(home, a+b*(c+d) == 0);
 	\end{lstlisting}
@@ -158,7 +158,7 @@ rel(home, a+b*(c+d) == 0);
 		y_1 + d_1 \le y_2 & \lor y_2 + d_2 \le y_1
 	\end{split}
 	\end{equation}
-	and in Gecode by
+	and in \emph{Gecode} by
 	\begin{lstlisting}
 rel(home,	(x1 + d1 <= x2) || 
 		(x2 + d2 <= x1) || 
@@ -252,9 +252,9 @@ rel(home,	(x1 + d1 <= x2) ||
 	\end{equation}
 	Without constraint propagation and branching first on $x$ this results in search tree \reffig{fig:bigTree}. Obviously the right parts of this tree can already be pruned already at the root by propagation of constraint $c_1$ and therefore it is not necessary to create and evaluate these subtrees \reffig{fig:smallTree}.
 	
-	The actual implementation of constraint propagation differs again from one toolset to another, but the basic concepts are for sure the same. As the topic of this paper is the implementation in Gecode I will concentrate on this one.
+	The actual implementation of constraint propagation differs again from one toolset to another, but the basic concepts are for sure the same. As the topic of this paper is the implementation in \emph{Gecode} I will concentrate on this one.
 	
-	Constraints in Gecode are always evaluated ahead of a further growth of a subtree, as it may be possible to prune some of the subtrees. The problem here is to decide in which order the constraints should be considered, and it may even be necessary to evaluate some constraints more often. A short example will explain this very well \cite[p.~575]{handbookCP}: Let there be two constraints 
+	Constraints in \emph{Gecode} are always evaluated ahead of a further growth of a subtree, as it may be possible to prune some of the subtrees. The problem here is to decide in which order the constraints should be considered, and it may even be necessary to evaluate some constraints more often. A short example will explain this very well \cite[p.~575]{handbookCP}: Let there be two constraints 
 	\begin{equation}
 		c_1: y - x^2 = 0
 	\end{equation}
@@ -274,14 +274,14 @@ rel(home,	(x1 + d1 <= x2) ||
 	\end{equation}
 	Actually this behaviour is very nice to have as it narrows efficiently the search space down.
 	
-	To implement this repeated evaluation of constraints in Gecode all constraints subscribe to the domains of the variables which are part of them. With this method the constraints get noticed whenever a variable domain is reduced and they can signal the system that they need to be evaluated once again.
+	To implement this repeated evaluation of constraints in \emph{Gecode} all constraints subscribe to the domains of the variables which are part of them. With this method the constraints get noticed whenever a variable domain is reduced and they can signal the system that they need to be evaluated once again.
 	
-	The next difficult decision is which constraint should be evaluated first. In the example above the constraints were quite simple and therefore it won't make a big difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case Gecode defines for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
+	The next difficult decision is which constraint should be evaluated first. In the example above the constraints were quite simple and therefore it won't make a big difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case \emph{Gecode} defines for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
 	
 	\subsection{Search Algorithms}
 	In constraint programming search algorithm define the way the search tree is constructed, starting from the root node. To improve the performance of the search usually at every newly created node a constraint propagation is executed to narrow the search space down. Based on these two steps then either one, the best or no solution is found. What the actual result in the end is depends obviously on the search algorithm.
 	
-	In Gecode it is possible to define its own search strategies, but the user is supported at this point with some standard engines which can be used to build custom ones:
+	In \emph{Gecode} it is possible to define its own search strategies, but the user is supported at this point with some standard engines which can be used to build custom ones:
 	\begin{itemize}
 	\item Depth-First Search
 	\item Limited Discrepancy Search
@@ -394,7 +394,7 @@ rel(home,	(x1 + d1 <= x2) ||
 	For practical application several variants of restart strategies were proposed \cite[p.~113]{handbookCP}
 	
 	\section{Conclusion}
-	Constraint programming is a very useful tool in practice, as it can solve abritrary combinatorial or optimization problems. Gecode, as representant of the various toolsets, implements a very hand interface to transform a mathematical description of a problem into code, which then can be used to solve the problem. In conclusion Gecode provides all the necessary tools, combines them with a nice interface, and is still very flexible concering optimzation for a certain area through the possibility to implement custom search strategies, based on some well studied and efficient algorithms.
+	Constraint programming is a very useful tool in practice, as it can solve abritrary combinatorial or optimization problems. \emph{Gecode}, as representant of the various toolsets, implements a very hand interface to transform a mathematical description of a problem into code, which then can be used to solve the problem. In conclusion \emph{Gecode} provides all the necessary tools, combines them with a nice interface, and is still very flexible concering optimzation for a certain area through the possibility to implement custom search strategies, based on some well studied and efficient algorithms.
 	
 	\begin{thebibliography}{1}
 		\bibitem{handbookCP}
