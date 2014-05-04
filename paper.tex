@@ -73,7 +73,7 @@
 	\end{abstract}
 	
 	\section{Introduction}
-	Constraint programming is a tool to solve mathematical problems through the formulation of constraints, which describe the desired solution. As typically a foraml and exact definition, like it can be found in \cite[p.~16]{handbookCP} for constraint propagation, is not as helpful as an example, I would like to give you a short overview on the topic through the well known problem \emph{SEND MORE MONEY}.
+	Constraint programming is a tool to solve mathematical problems through the formulation of constraints, which describe the desired solution. As usually a formal and exact definition, like it can be found in \cite[p.~16]{handbookCP} for constraint programming, is not as helpful as an example, I would like to give you a short overview on the topic through the well known problem \emph{SEND MORE MONEY}.
 	
 	Consider the problem
 	\[SEND + MORE = MONEY\]
@@ -103,7 +103,7 @@
 		\end{equation}
 	\end{enumerate}
 	
-	Now a solver for constraint programming like \emph{Gecode} provides the necessary tools to define these constraints in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected search algorithm. Actually this example contains only linear constraints and could therefore be solved through linear programming. As linear programming is only a subset of constraint programming the latter one is often the more useful one, because not every problem in the real world is linear or can be linearized in a useful way. Consequently constraint programming with its ability to consider constraints in there most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
+	Now a solver for constraint programming like \emph{Gecode} provides the necessary tools to define these constraints in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected search algorithm. Actually this example contains only linear constraints and could therefore be solved through linear programming. As linear programming is only a subset of constraint programming the latter one is often the more useful one, because not every problem in the real world is linear or can be linearized in a useful way. Consequently constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
 	
 	In the following I will describe the necessary steps to solve a problem with constraint programming and as example of an implementation I will always refer to \emph{Gecode} \cite{gecode}.
 	
@@ -115,7 +115,7 @@
 		\item Bool: $x \in \{\text{true}, \text{false}\}$
 		\item Float: $x \in [-4, 3]$, $x \in [-10, 8] \cup [10, 12]$, \dots
 	\end{itemize}
-	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints or to apply trial and error through splitting the intervals \cite[p.~571]{handbookCP}. I will come back to this topic later during the discussion of the branch-and-bound search.
+	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints, or to apply trial and error through splitting the intervals \cite[p.~571]{handbookCP}. I will come back to this topic later during the discussion of branching strategies.
 	
 	\subsection{Constraint Types}
 	
@@ -135,13 +135,13 @@
 	\label{fig:squares}
 	\end{figure}
 	
-	As already mentioned before constraint programming is the generalization of linear programming, therefore it is at least possible do define linear constraints like \refeq{eq:linearConstraint}. Which statements are possible to make varies than very much from the programming language in which the problem is implemented and the used toolset. Typical constraints would be
+	As already mentioned before constraint programming is the generalization of linear programming, therefore it is at least possible do define linear constraints like \refeq{eq:linearConstraint}. Which statements are possible to make and how handy it is to do so varies very much from the programming language in which the problem is implemented and the used toolset. Typical constraints would be
 	\begin{itemize}
 		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
 		\item Inequalities: $x \ne y$, \dots
 		\item Relations: $x < 2 y$, $e^x < 4$, \dots
 	\end{itemize}
-	In \emph{Gecode} for example it is very easy to create for example a nonlinear constraint based on the integer variables a, b, c and d \cite[p.~120]{programmingGecode}:
+	In \emph{Gecode} it is very easy to create for instance a nonlinear constraint based on the integer variables $a$, $b$, $c$ and $d$ \cite[p.~120]{programmingGecode}:
 	\begin{lstlisting}
 rel(home, a+b*(c+d) == 0);
 	\end{lstlisting}
@@ -279,9 +279,9 @@ rel(home,	(x1 + d1 <= x2) ||
 	The next difficult decision is which constraint should be evaluated first. In the example above the constraints were quite simple and therefore it won't make a big difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case \emph{Gecode} defines for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
 	
 	\subsection{Search Algorithms}
-	In constraint programming search algorithm define the way the search tree is constructed, starting from the root node. To improve the performance of the search usually at every newly created node a constraint propagation is executed to narrow the search space down. Based on these two steps then either one, the best or no solution is found. What the actual result in the end is depends obviously on the search algorithm.
+	In constraint programming search algorithms define the way the search tree is constructed, starting from the root node. To improve the performance of the search usually at every newly created node a constraint propagation is executed to narrow the search space down. Based on these two steps then either one, the best or no solution is found. What the actual result in the end is depends obviously on the search algorithm.
 	
-	In \emph{Gecode} it is possible to define its own search strategies, but the user is supported at this point with some standard engines which can be used to build custom ones:
+	In \emph{Gecode} it is possible to define custom strategies, but the user is supported at this point with some standard engines which can be used to build custom ones:
 	\begin{itemize}
 	\item Depth-First Search
 	\item Limited Discrepancy Search
@@ -301,7 +301,7 @@ rel(home,	(x1 + d1 <= x2) ||
 	
 	Obviously for variables with a Float domain the Enumeration and Binary choice points are not feasible, but the last one, domain splitting, is typically used. As termination criteria for a Float it is often necessary to define a epsilon which describes the interval length, at which the solver states to have found a solution.
 	
-	For all branching strategies there is a big choice of freedom left, which can be used to implement some heuristics. This additional information is either gained during the search itself of pre defined by the user.
+	For all branching strategies there is a big choice of freedom left, which can be used to implement some heuristics. This additional information is either gained during the search itself of predefined by the user.
 	
 	\subsubsection{Depth-First Search}
 	\begin{algorithm}
@@ -325,28 +325,28 @@ rel(home,	(x1 + d1 <= x2) ||
 		\caption{Depth-first search in a binary search tree for one feasible solution, without constraint propagation}
 	\end{algorithm}
 	
-	The Depth-first search is a good point to start, as it was also historical the first developed one. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for problems with such variable domains it is necessary to use for example a Branch-and-Bound Search. Sometimes the Depth-First Search is also referred to as chronological backtrack search.
+	The Depth-first search is a good point to start, as it was also historical the first developed one. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for problems with such variable domains it is necessary to use for instance Branch-and-reduce. Sometimes the Depth-first search is also referred to as chronological backtrack search.
 	
-	The starting point is the root node, from where one the algorithm is called recursively. At every node mainly two steps are executed: First a constraint propagation and then a branching, which divides the search space into two disjoint sub spaces, on which the same algorithm is applied again. The search stops in a leave if either no branching is possible anymore and therefore a valid solution is found, or one or more variable domains are emptied, which indicates that in this leave no possible solution exists.
+	The starting point is the root node, from where on the algorithm is called recursively. At every node mainly two steps are executed: First a constraint propagation and then a branching, which divides the search space into two disjoint sub spaces, on which the same algorithm is applied again. The search stops in a leave if either no branching is possible anymore and therefore a valid solution is found, or one or more variable domains are emptied, which indicates that in this leave no possible solution exists.
 	
 	This search is a so-called complete algorithm as it can be proven that all possible solutions will be found \cite[p.~85]{handbookCP}. Because of this characteristic it is very useful to proove for example that for a certain problem no solution exists. The main drawback obviously is the execution time, as it does an exhaustive search, and maybe even the memory usage if during the search many solutions are found.
 	
-	By stopping the search after one feasible solution is found the algorithm the Depth-first search can often be accelerated. Although this slightly modified version is not complete anymore, in practice it is in some areas sufficient to know just one valid solution.
+	By stopping the search after one feasible solution is found the algorithm can often be accelerated. Although this slightly modified version is not complete anymore, in practice it is in some areas sufficient to know just one valid solution.
 	
 	\subsubsection{Depth-First Search with Optimization}
-	If in the constraint programming is a certain objective is defined which should be either minimized or maximized a modified version of the Depth-first search can be applied. The only difference is that it evalutes the objective function for every found solution concerning the constraints and stores during the search only the best one. To accelerate the search after one solution is already found it is possible to add an additional constraint which defines, that the new objective must be greater than the one related to the best solution till that point. Through this enhancement it is possible to prune even more sub trees and therefore to get the desired result faster.
+	If in the constraint programming a objective is defined which should be either minimized or maximized a modified version of the Depth-first search can be applied. The only difference is that it evalutes the objective function for every found solution concerning the constraints and stores during the search only the best one. To accelerate the search it is possible to add an additional constraint which defines that the new objective must better than the best so far. Through this enhancement even more sub trees are pruned and the search is faster.
 	
-	This algorithm is again a complete one, therefore it will always find the best solution if one exists. This algorithm does not inherit the bad memory characteristics from the Depth-First Search as only one solution is stored, but the search is still exhaustive and can be very slow, depending on the size of the variable domains.
+	This algorithm is again a complete one, therefore it will always find the best solution if one exists. This algorithm does not inherit the bad memory characteristics from the Depth-first search as only one solution is stored, but the search is still exhaustive and can be very slow, depending on the size of the variable domains.
 	
 	\subsubsection{Branch-and-Bound Search}
 	Branch-and-bound refers actually to two parts, a Branch-and-reduce search and bounding. Branch-and-reduce itself is the continous constraint propagation to reduce the variable domains combined with branching when there is no further reduction by constraint propagation possible. A simple heuristic for branching would be to split the biggest domain into two equal sized intervals.
 	
-	Bounding is then the part which transforms the Branch-and-reduce search into an optimization. To be able to do this an objective function is necessary. In the following I will assume that the objective function has to be minimized with a loss of generality.
+	Bounding is then the part which transforms the Branch-and-reduce search into an optimization. To be able to do this an objective function is necessary. In the following I will assume that the objective function has to be minimized without a loss of generality.
 	
-	Every Branch splits the total problem into two sub problems. With some additional constraints, for example one variable must be an integer $x \in \mathbb{Z}$, it may happen that the real optimum of a sub problem is not the same one as if this additional constraint is considered. For finding the first optimum the trick is to branch in ways that a certain sub problem ends up with only a few possible candidates left, which then can be tested each. With this first optimum the search algorithm has then a so far best optimum which can be used as upper bound for the optimum. If for one sub problem the relaxed optimum, the optimum without for example the constraint of integrity, is worse than this upper bound the sub problem can be pruned. Only if the relaxed optimum turns out to be better than the best optimum so far it is necessary to look further into this sub problem and either test the left candidates or apply additional branching.
+	Every Branch splits the total problem into two sub problems. With some additional constraints, for example one variable must be an integer $x \in \mathbb{Z}$, it may happen that the optimum of a sub problem without this constraint is not the same one as if this additional constraint is considered. For finding the first optimum the trick is to branch in ways that a certain sub problem ends up with only a few possible candidates left, which then can be tested each. With this first optimum the search algorithm has then a so far best optimum which can be used as upper bound for the optimum. If for one sub problem the relaxed optimum, the optimum without for example the constraint of integrity, is worse than this upper bound the sub problem can be pruned. Only if the relaxed optimum turns out to be better than the best optimum so far it is necessary to look further into this sub problem and either test the left candidates or apply additional branching.
 	
 	\subsubsection{Limited Discrepancy Search}
-	Limited Discrepancy Search falls into the category of Best-first searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy} and it depends on some heurisitics for the tree, which are determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive and second heurisitics work worse the farther away from the solution they are. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy Search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement compared to a chronological backtrack was shown by experimental results and theoretical proven in \cite{limitedDiscrepancy}.
+	Limited Discrepancy Search falls into the category of Best-first searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy}. It depends on some heurisitics for the tree, which are determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive and second heurisitics work worse the farther away from the solution, therefore closer to the root, they are. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy Search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement compared to a chronological backtrack was shown by experimental results and theoretical proven in \cite{limitedDiscrepancy}.
 	
 	\begin{algorithm}
 		\begin{algorithmic}
@@ -387,14 +387,14 @@ rel(home,	(x1 + d1 <= x2) ||
 	\end{algorithm}
 	
 	\subsubsection{Backjumping}
-	A specific version of backjumping was already mentioned, the Limited Discrepancy Search, where instead of jumping one node back the algorithm always jumps as far back to the root node as possible. In general this is proven to be better than the chronological backtracking \cite{limitedDiscrepancy}, but for certain problems it may be possible to find better points to jump back. A jump back in the search tree means to detect a so-called nogood decision, which caused the violation of a constraint in the deadend. How these nogoods must be selected and stored to improve the search depends heavily on the specific field and if it is down wrong the backjumping can even be less efficient than chronological backtracking \cite[p.~100]{handbookCP}.
+	A specific version of backjumping was already mentioned, the Limited Discrepancy Search, where instead of jumping one node back the algorithm always jumps as far back to the root node as possible. In general this is proven to be better than the chronological backtracking \cite{limitedDiscrepancy}, but for certain problems it may be possible to find better points to jump back. A jump back in the search tree means to detect a so-called nogood decision, which caused the violation of a constraint in the deadend. How these nogoods must be selected and stored to improve the search depends heavily on the specific field and if it is done wrong the backjumping can even be less efficient than chronological backtracking \cite[p.~100]{handbookCP}.
 	
 	\subsubsection{Restart Strategies}
-	Branching means always to apply certain heuristics and this heuristics may fail or produce bad results for the first execution. If it turns out that the search tree is build in a disadvantageous way a restart strategy may do the trick to improve the search. For such a restart the heuristic is improved, based on the things the search has learned to be a not so good solution during the first or first few attempts to build a search tree.
+	Branching means always to apply certain heuristics and these heuristics may fail or produce bad results for the first execution. If it turns out that the search tree is build in a disadvantageous way a restart strategy may do the trick to improve the search. For such a restart the heuristic is improved, based on the things the search has learned to be a not so good solution during the first or first few attempts to build a search tree.
 	For practical application several variants of restart strategies were proposed \cite[p.~113]{handbookCP}
 	
 	\section{Conclusion}
-	Constraint programming is a very useful tool in practice, as it can solve abritrary combinatorial or optimization problems. \emph{Gecode}, as representant of the various toolsets, implements a very hand interface to transform a mathematical description of a problem into code, which then can be used to solve the problem. In conclusion \emph{Gecode} provides all the necessary tools, combines them with a nice interface, and is still very flexible concering optimzation for a certain area through the possibility to implement custom search strategies, based on some well studied and efficient algorithms.
+	Constraint programming is a very useful tool in practice, as it can solve abritrary combinatorial or optimization problems. \emph{Gecode}, as representant of the various toolsets, implements a very handy interface to transform a mathematical description of a problem into code, which then can be used to solve the problem. In conclusion, \emph{Gecode} provides all the necessary tools, combines them with a nice interface, and is still very flexible concering optimzation for a certain area through the possibility to implement custom search strategies, based on some well studied and efficient algorithms.
 	
 	\begin{thebibliography}{1}
 		\bibitem{handbookCP}
