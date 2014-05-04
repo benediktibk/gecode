@@ -1,0 +1,76 @@
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+\usepackage{lmodern}
+\usetheme{Berlin}
+\definecolor{UniRed}{RGB}{255,0,0}
+\definecolor{UniWhite}{RGB}{255,255,255}
+\setbeamercolor{eecks} {bg=UniRed, fg=UniWhite}
+\title{Constraint Programming - Inside \textsc{Gecode}}  
+\author[Schmidt]{Benedikt~Schmidt}
+\institute{Technische~Universit\"at~M\"unchen,~Germany}
+\date{\today} 
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame} 
+
+\begin{frame}
+\frametitle{Table of contents}
+\tableofcontents
+\end{frame} 
+
+\section{Introduction into Constraint Programming}
+\begin{frame}
+	\frametitle{Constraint Programming}
+	
+	\begin{itemize}
+		\item Arbitrary problems
+		\item Definition of solution through constraints
+		\item Optimization
+	\end{itemize}
+\end{frame}
+
+\subsection{SEND MORE MONEY}
+\begin{frame}
+	\frametitle{Problem Formulation}
+	
+	\[SEND + MORE = MONEY\]
+	\begin{equation}
+	\begin{split}
+		& S \cdot 10^3 + E \cdot 10^2 + N \cdot 10^1 + D \cdot 10^0 + \\ 
+		& M \cdot 10^3 + O \cdot 10^2 + R \cdot 10^1 + E \cdot 10^0 = \\ 
+		& M \cdot 10^4 + O \cdot 10^3 + N \cdot 10^2 + E \cdot 10^1 + Y \cdot 10^0
+	\end{split}
+	\end{equation}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Constraints}
+	
+	\begin{itemize}
+		\item All variables have different values
+		\item No trailing zeros
+	\end{itemize}
+	
+	$\Rightarrow$ combined this leads to
+	\begin{equation}
+		S \ne 0 \land M \ne 0
+	\end{equation}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Calculation}
+	
+	\begin{beamercolorbox}[shadow=true, rounded=true]{eecks}
+		\centering		
+		\Large{Magic happens.}
+	\end{beamercolorbox}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Solutions}
+\end{frame}
+
+\end{document}
+
