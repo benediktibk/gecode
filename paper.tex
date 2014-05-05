@@ -69,15 +69,15 @@
 	\maketitle	
 	
 	\begin{abstract}	
-		\emph{Gecode} is one of the various tools for constraint programming, a well-studied area which aims to solve arbitrary combinatorial and optimzation problems. The basement for \emph{Gecode} are variables, their domains, constraints on these variables and strategies to search for a solution space or only single solutions.
+		NEXT TRY
 	\end{abstract}
 	
 	\section{Introduction}
-	Constraint programming is a method to solve mathematical problems through the formulation of constraints, which describe the desired solution. As a formal and exact definition, like it can be found in \cite[p.~16]{handbookCP} for constraint programming, is not as helpful as an example, I would like to give you a short overview on the topic through the well known problem \emph{SEND MORE MONEY}.
+	Constraint programming is a method to solve mathematical problems through the formulation of constraints, which describe the desired solution. As a formal and exact definition, like it can be found in \cite[p.~16]{handbookCP} for constraint programming, is not as helpful as an example, I would like to give you a short overview on the topic through the problem called \emph{SEND MORE MONEY}.
 	
 	Consider the problem
 	\[SEND + MORE = MONEY\]
-	where every character is a variable and the position in the word describes the weight.
+	where every character is a variable and the position in the word describes the weight, like it can be seen in \refeq{eq:linearConstraint}.
 	\begin{equation}
 	\label{eq:linearConstraint}
 	\begin{split}
@@ -87,10 +87,11 @@
 	\end{split}
 	\end{equation}		
 	
-	To narrow the solution space a little bit down I state additional constraints:
+	To narrow the solution space down I state additional constraints:
 	\begin{enumerate}
 	\item All variables must have different values.
 		\begin{equation}
+		\label{eq:allDifferent}
 		\begin{split}
 			S \ne E \land S \ne N \land & S \ne D \land \dots \land \\
 			E \ne N \land & E \ne D \land \dots \land \\
@@ -99,23 +100,24 @@
 		\end{equation}	
 	\item There must not be a trailing zero. Combined with the so-called all-different constraint \cite{allDifferent} from above this results in
 		\begin{equation}
+			\label{eq:trailingZero}
 			S \ne 0 \land M \ne 0
 		\end{equation}
 	\end{enumerate}
 	
-	Now a solver for constraint programming like \emph{Gecode} provides the necessary tools to define these constraints in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected search algorithm. Actually this example contains only linear constraints and could therefore be solved through linear programming. As linear programming is only a subset of constraint programming the latter one is often the more useful one, because not every problem in the real world is linear or can be linearized in a useful way. Consequently constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
+	A solver for constraint programming like \emph{Gecode} provides the necessary tools to define constraints like \refeq{eq:linearConstraint}, \refeq{eq:allDifferent} and \refeq{eq:trailingZero} in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected algorithm. This example contains only linear constraints and could therefore be solved through linear programming REFERENCE MISSING. As linear programming is only a subset of constraint programming the latter one is the more general one with more practical applications; not every problem in the real world is linear or can be linearized in a useful way. Consequently, constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
 	
 	In the following I will describe the necessary steps to solve a problem with constraint programming and as example of an implementation I will always refer to \emph{Gecode} \cite{gecode}.
 	
 	\section{State of the Art}
 	\subsection{Variable Domains}
-	In constraint programming to a variable a set of possible values is connected, the so called domain. This domain can be a finite or inifite set of integers, true or false and intervals. Depending on the domain a variable is called an integer, boolean or floating variable. Possible ranges for a variable $x$ of each domain are:
+	In constraint programming a variable is connected to a set of possible values, the so called domain. Depending on the domain a variable is called an integer, boolean or floating variable. Possible ranges for a variable $x$ of each domain are:
 	\begin{itemize}
-		\item Integer: $x \in \mathbb{N}$, $x \in \{-5, 4, 10\}$, \dots
+		\item Integer: finite or inifnite sets like $x \in \mathbb{N}$, $x \in \{-5, 4, 10\}$, \dots
 		\item Bool: $x \in \{\text{true}, \text{false}\}$
-		\item Float: $x \in [-4, 3]$, $x \in [-10, 8] \cup [10, 12]$, \dots
+		\item Float: intervals or unions of intervals like $x \in [-4, 3]$, $x \in [-10, 8] \cup [10, 12]$, \dots
 	\end{itemize}
-	This distinction is important as especially for floating variables the classical approach to constraint programming, a backtrack search, can not be applied directly. For integer and boolean variables the domain for each variable is reduced step by step during a search, either by constraints which rule out certain values or by trial and error. As floating variables do not have discrete values for their domains the procedere in this case is to reduce or split intervals based on constraints, or to apply trial and error through splitting the intervals \cite[p.~571]{handbookCP}. I will come back to this topic later during the discussion of branching strategies.
+	This distinction is fundamental as especially for floating variables the classical combinatorial approach to constraint programming is impossible.
 	
 	\subsection{Constraint Types}
 	
@@ -135,14 +137,14 @@
 	\label{fig:squares}
 	\end{figure}
 	
-	As already mentioned before constraint programming is the generalization of linear programming, therefore it is at least possible do define linear constraints like \refeq{eq:linearConstraint}. Which statements are possible to make and how handy it is to do so varies very much from the programming language in which the problem is implemented and the used toolset. Typical constraints would be
+	As constraint programming is the generalization of linear programming it is at least possible do define linear constraints like \refeq{eq:linearConstraint}. Which statements are possible to make and how handy it is to do so varies very much from the programming language in which the problem is implemented and the used toolset. Typical constraints are the following
 	\begin{itemize}
 		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
 		\item Inequalities: $x \ne y$, \dots
 		\item Relations: $x < 2 y$, $e^x < 4$, \dots
 	\end{itemize}
 	
-	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap. The related variables are defined in \reffig{fig:squares}. This problem can be expressed by \cite[p. 101]{programmingGecode}
+	Different constraint types like equalities and inequalities can be combined through logical operators to boolean expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap. The related variables are defined in \reffig{fig:squares}. This problem can be expressed by \cite[p. 101]{programmingGecode}
 	\begin{equation}
 	\begin{split}
 		x_1 + d_1 \le x_2 & \lor x_2 + d_2 \le x_1 \lor \\
@@ -150,8 +152,11 @@
 	\end{split}
 	\end{equation}
 	
+	\subsection{Search Tree}
+	MISSING
+	
 	\subsection{Constraint Propagation}
-	Constraint propagation is a key concept in constraint programming as it allows to speed-up the search significantly. The term propagation refers in this area to the reduction of domains of variables which are infeasible, considering other constraints and affected variable domains. As the size of the variable domain is related to possibilities which have to be checked by a search, the constraint propagation is able to prune infeasible subtrees. Therefore the whole search process is accelerated.
+	Constraint propagation is a key concept in constraint programming as it reduces the size of the search space significantly. The term propagation refers in this area to the reduction of domains of variables which are infeasible, considering other constraints and affected variable domains. As the size of the variable domain is related to possibilities which have to be checked by a search, the constraint propagation is able to prune infeasible subtrees. Therefore the whole search process is accelerated.
 	
 	\begin{figure}
 	\center
@@ -235,7 +240,7 @@
 	\end{equation}
 	Without constraint propagation and branching first on $x$ the search trees turns out to be the one in \reffig{fig:bigTree}. Obviously the right parts of this tree can already be pruned already at the root by propagation of constraint $c_1$ and therefore it is not necessary to create and evaluate these subtrees like in \reffig{fig:smallTree}.
 	
-	The actual implementation of constraint propagation differs again from one toolset to another, but the basic concepts are for sure the same. As the topic of this paper is the implementation in \emph{Gecode} I will concentrate on this one.
+	The actual implementation of constraint propagation differs again from one toolset to another, but the basic concepts are for sure the same REFERENZ FEHLT. As the topic of this paper is the implementation in \emph{Gecode} I will concentrate on this one.
 	
 	Constraints in \emph{Gecode} are always evaluated ahead of a further growth of a subtree, as it may be possible to prune some of the subtrees. The problem here is to decide in which order the constraints should be considered, and it may even be necessary to evaluate some constraints more often. A short example will explain this very well \cite[p.~575]{handbookCP}: Let there be two constraints 
 	\begin{equation}
@@ -255,14 +260,13 @@
 		&\dots
 	\end{split}
 	\end{equation}
-	Actually this behaviour is very nice to have as it narrows efficiently the search space down.
 	
 	To implement this repeated evaluation of constraints in \emph{Gecode} all constraints subscribe to the domains of the variables which are part of them. With this method the constraints get noticed whenever a variable domain is reduced and they can signal the system that they need to be evaluated once again.
 	
-	The next difficult decision is which constraint should be evaluated first. In the example above the constraints were quite simple and therefore it won't make a big difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case \emph{Gecode} defines for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
+	The next decision to be made is which constraint should be evaluated first. In the example above the constraints were quite simple and therefore it won't make a big difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case \emph{Gecode} defines for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
 	
 	\subsection{Search Algorithms}
-	In constraint programming search algorithms define the way the search tree is constructed, starting from the root node. To improve the performance of the search usually at every newly created node a constraint propagation is executed to narrow the search space down. Based on these two steps then either one, the best or no solution is found. What the actual result in the end is depends obviously on the search algorithm.
+	In constraint programming search algorithms define the way the search tree is constructed, starting from the root node. To improve the performance of the search usually at every newly created node a constraint propagation is executed to narrow the search space down. Based on these two steps then either one, the best or no solution is found. What the actual result in the end is depends on the type of search algorithm.
 	
 	In \emph{Gecode} it is possible to define custom strategies, but the user is supported at this point with some standard engines which can be used to build custom ones:
 	\begin{itemize}
@@ -272,19 +276,21 @@
 	\item Depth-First Search Restart Optimization
 	\end{itemize}
 	
-	In the following part I will discuss these searches and some additional, well known techniques, which can be applied during searches in constraint programming.
+	In the following part I will discuss these searches and additional techniques, which can be applied during searches in constraint programming.
 	
 	\subsubsection{Branching Strategies}
-	If at one node it is not possible to empty one variable domain or to reduce all variable domains to the size one it is necessary to make a decision: How should be the next subtree be build? The question is answered by the selected branching strategy, which depends on the variable domain. For Integer (and Bool) Variables there are three possible strategies \cite[p.~87]{handbookCP} which differ in how the domain is distributed to the subtrees. All the strategies have in common that they create additional temporary constraints, which are only valid for the specific subtree. The temporay addition of constraints is called \emph{posting}.
+	If at one node it is not possible to empty one variable domain or to reduce all variable domains to the size one it is necessary to make a decision: How should the next subtree be constructed? The question is answered by the selected branching strategy. No matter which one is selected, they all have in common that they create additional, temporary constraints, which are only applied to the specific subtrees. This step is called \emph{posting} a constraint on a branch.
+	
+	The branching strategy depends on the variable domain: For Integer (and Boolean) variables there are three common strategies \cite[p.~87]{handbookCP} which differ in how the domain is distributed to the subtrees.
 	\begin{itemize}
 	\item Enumeration: The domain for $x \in D = {x_1, x_2, \dots}$ is split up into $|D|$-branches where for every branch $i$ one additional constraint $c:\ x = x_i$ is posted.
 	\item Binary choice points: One value $x_i$ of the domain $D$ of the variable $x$ is selected and the domain is split up into two subtrees: On one the constraint $x = x_i$ and on the other one the constraint $x \ne x_i$ is posted. This results into something like a binary tree at this point.
 	\item Domain splitting: The domain $D$ for the variable $x$ is split up into two disjoint intervals or sets, for example $x < 2$ and $x \ge 2$.
 	\end{itemize}
 	
-	Obviously for variables with a Float domain the Enumeration and Binary choice points are not feasible, but the last one, domain splitting, is typically used. As termination criteria for a Float it is often necessary to define a epsilon which describes the interval length, at which the solver states to have found a solution.
+	As for variables with a Float domain the Enumeration and Binary choice points are not feasible, the last one, domain splitting, is typically used. As termination criteria for a Float it is often necessary to define a certain epsilon $\epsilon \in \mathbb{R}_{>0}$ which describes the interval length, at which the solver states to have found a solution.
 	
-	For all branching strategies there is a big choice of freedom left, which can be used to implement some heuristics. This additional information is either gained during the search itself of predefined by the user.
+	For all branching strategies there is a choice of freedom left, which can be used to implement some heuristics. This additional information is either gained during the search itself of predefined by the user.
 	
 	The Depth-first search is a good point to start, as it was also historical the first developed one. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for problems with such variable domains it is necessary to use for instance Branch-and-reduce. Sometimes the Depth-first search is also referred to as chronological backtrack search.
 	
