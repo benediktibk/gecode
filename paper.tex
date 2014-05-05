@@ -58,8 +58,8 @@
   tabsize=3
 }
 
-\newcommand{\reffig}[1]{{[Fig.~\ref{#1}.]}}
-\newcommand{\refeq}[1]{{[Eq.~\ref{#1}.]}}
+\newcommand{\reffig}[1]{{figure \ref{#1}}}
+\newcommand{\refeq}[1]{{(\ref{#1})}}
 
 \begin{document}
 	\title{Constraint Programming - Inside Gecode}
@@ -151,7 +151,7 @@ rel(home, a+b*(c+d) == 0);
 	\end{equation}
 	which is a quite handy way to do it.
 	
-	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap \reffig{fig:squares}. This problem can be expressed mathematically by \cite[p. 101]{programmingGecode}
+	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap. The related variables are defined in \reffig{fig:squares}. This problem can be expressed mathematically by \cite[p. 101]{programmingGecode}
 	\begin{equation}
 	\begin{split}
 		x_1 + d_1 \le x_2 & \lor x_2 + d_2 \le x_1 \lor \\
@@ -250,7 +250,7 @@ rel(home,	(x1 + d1 <= x2) ||
 	\begin{equation}
 		c_1:\ x \le y
 	\end{equation}
-	Without constraint propagation and branching first on $x$ this results in search tree \reffig{fig:bigTree}. Obviously the right parts of this tree can already be pruned already at the root by propagation of constraint $c_1$ and therefore it is not necessary to create and evaluate these subtrees \reffig{fig:smallTree}.
+	Without constraint propagation and branching first on $x$ the search trees turns out to be the one in \reffig{fig:bigTree}. Obviously the right parts of this tree can already be pruned already at the root by propagation of constraint $c_1$ and therefore it is not necessary to create and evaluate these subtrees like in \reffig{fig:smallTree}.
 	
 	The actual implementation of constraint propagation differs again from one toolset to another, but the basic concepts are for sure the same. As the topic of this paper is the implementation in \emph{Gecode} I will concentrate on this one.
 	
