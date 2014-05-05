@@ -141,31 +141,14 @@
 		\item Inequalities: $x \ne y$, \dots
 		\item Relations: $x < 2 y$, $e^x < 4$, \dots
 	\end{itemize}
-	In \emph{Gecode} it is very easy to create for instance a nonlinear constraint based on the integer variables $a$, $b$, $c$ and $d$ \cite[p.~120]{programmingGecode}:
-	\begin{lstlisting}
-rel(home, a+b*(c+d) == 0);
-	\end{lstlisting}
-	This single statement in C++ implements the constraint
-	\begin{equation}
-		a + b \cdot (c + d) == 0
-	\end{equation}
-	which is a quite handy way to do it.
 	
-	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap. The related variables are defined in \reffig{fig:squares}. This problem can be expressed mathematically by \cite[p. 101]{programmingGecode}
+	Hence there are boolean variables available it is also possible to use logical operators to combine other constraint types to logical expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap. The related variables are defined in \reffig{fig:squares}. This problem can be expressed by \cite[p. 101]{programmingGecode}
 	\begin{equation}
 	\begin{split}
 		x_1 + d_1 \le x_2 & \lor x_2 + d_2 \le x_1 \lor \\
 		y_1 + d_1 \le y_2 & \lor y_2 + d_2 \le y_1
 	\end{split}
 	\end{equation}
-	and in \emph{Gecode} by
-	\begin{lstlisting}
-rel(home,	(x1 + d1 <= x2) || 
-		(x2 + d2 <= x1) || 
-		(y1 + d1 <= y2) || 
-		(y2 + d2 <= y1));
-	\end{lstlisting}
-	which is again quite obvious to a reader with some experience in a C-like programming language.	
 	
 	\subsection{Constraint Propagation}
 	Constraint propagation is a key concept in constraint programming as it allows to speed-up the search significantly. The term propagation refers in this area to the reduction of domains of variables which are infeasible, considering other constraints and affected variable domains. As the size of the variable domain is related to possibilities which have to be checked by a search, the constraint propagation is able to prune infeasible subtrees. Therefore the whole search process is accelerated.
@@ -303,28 +286,6 @@ rel(home,	(x1 + d1 <= x2) ||
 	
 	For all branching strategies there is a big choice of freedom left, which can be used to implement some heuristics. This additional information is either gained during the search itself of predefined by the user.
 	
-	\subsubsection{Depth-First Search}
-	\begin{algorithm}
-		\begin{algorithmic}
-			\Function{DFS}{node}
-				\If{$Goal(node)$}
-					\State \Return $node$
-				\EndIf
-				\State $s \gets Successors(node)$
-				\If{$Null(s)$}
-					\State \Return $nil$
-				\EndIf
-				\State $result \gets DFS(Left(s))$
-				\If{$result \ne nil$}
-					\State \Return $result$
-				\Else
-					\State \Return $DFS(Right(s))$
-				\EndIf
-			\EndFunction
-		\end{algorithmic}
-		\caption{Depth-first search in a binary search tree for one feasible solution, without constraint propagation}
-	\end{algorithm}
-	
 	The Depth-first search is a good point to start, as it was also historical the first developed one. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for problems with such variable domains it is necessary to use for instance Branch-and-reduce. Sometimes the Depth-first search is also referred to as chronological backtrack search.
 	
 	The starting point is the root node, from where on the algorithm is called recursively. At every node mainly two steps are executed: First a constraint propagation and then a branching, which divides the search space into two disjoint sub spaces, on which the same algorithm is applied again. The search stops in a leave if either no branching is possible anymore and therefore a valid solution is found, or one or more variable domains are emptied, which indicates that in this leave no possible solution exists.
@@ -347,44 +308,6 @@ rel(home,	(x1 + d1 <= x2) ||
 	
 	\subsubsection{Limited Discrepancy Search}
 	Limited Discrepancy Search falls into the category of Best-first searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy}. It depends on some heurisitics for the tree, which are determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive and second heurisitics work worse the farther away from the solution, therefore closer to the root, they are. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy Search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement compared to a chronological backtrack was shown by experimental results and theoretical proven in \cite{limitedDiscrepancy}.
-	
-	\begin{algorithm}
-		\begin{algorithmic}
-			\Function{$LDSProbe$}{$node$, $k$}
-				\If{$Goal(node)$}
-				    \State \Return $node$
-				\EndIf
-				\State $s \gets Successors(node)$
-				\If{$Null(s)$}
-					\State \Return $nil$
-				\EndIf
-				\If{$k = 0$}
-					\State \Return $LDSProbe(Left(s), 0)$
-				\Else
-					\State $result \gets LDSProbe(Right(s), k - 1)$
-					\If{$result \ne nil$}
-						\State \Return $result$
-					\EndIf
-					\State \Return $LDSProbe(Left(s), k)$
-				\EndIf
-			\EndFunction
-		\end{algorithmic}
-		\caption{Probe of Limited Discrepancy Search for a binary search tree from \cite{limitedDiscrepancy}, without constraint propagation}
-	\end{algorithm}
-	
-	\begin{algorithm}
-		\begin{algorithmic}			
-			\Function{$LDS$}{$node$}
-				\For{$x \gets 0\ \text{to maximum depth}$}
-					\State $result \gets LDSProbe(node, x)$
-					\If{$result \ne nil$}
-						\State \Return $result$
-					\EndIf
-				\EndFor
-			\EndFunction
-		\end{algorithmic}
-		\caption{Limited Discrepancy Search for a binary search tree from \cite{limitedDiscrepancy}, without constraint propagation}
-	\end{algorithm}
 	
 	\subsubsection{Backjumping}
 	A specific version of backjumping was already mentioned, the Limited Discrepancy Search, where instead of jumping one node back the algorithm always jumps as far back to the root node as possible. In general this is proven to be better than the chronological backtracking \cite{limitedDiscrepancy}, but for certain problems it may be possible to find better points to jump back. A jump back in the search tree means to detect a so-called nogood decision, which caused the violation of a constraint in the deadend. How these nogoods must be selected and stored to improve the search depends heavily on the specific field and if it is done wrong the backjumping can even be less efficient than chronological backtracking \cite[p.~100]{handbookCP}.
