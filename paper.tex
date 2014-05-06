@@ -75,37 +75,23 @@
 	\section{Introduction}
 	Constraint programming is a method to solve mathematical problems through the formulation of constraints, which describe the desired solution. As a formal and exact definition, like it can be found in \cite[p.~16]{handbookCP} for constraint programming, is not as helpful as an example, I would like to give you a short overview on the topic through the problem called \emph{SEND MORE MONEY}.
 	
-	Consider the problem
-	\[SEND + MORE = MONEY\]
-	where every character is a variable and the position in the word describes the weight, like it can be seen in \refeq{eq:linearConstraint}.
+	Consider the problem of choosing how many components of three different types should be placed on a chip where variables $x$, $y$ and $z$ represent the number of components for each type. As the size of the chip is limited the total area is constrainted by
 	\begin{equation}
-	\label{eq:linearConstraint}
-	\begin{split}
-		& S \cdot 10^3 + E \cdot 10^2 + N \cdot 10^1 + D \cdot 10^0 + \\ 
-		& M \cdot 10^3 + O \cdot 10^2 + R \cdot 10^1 + E \cdot 10^0 = \\ 
-		& M \cdot 10^4 + O \cdot 10^3 + N \cdot 10^2 + E \cdot 10^1 + Y \cdot 10^0
-	\end{split}
-	\end{equation}		
+		10x + 15y + 5z \le 1000
+		\label{eq:areaConstraint}
+	\end{equation}
+	with different weights for each type. Additionally, the types have different costs and the total cost for a chip is limited:
+	\begin{equation}
+		3x + y^2 + 2z \le 500
+		\label{eq:costConstraint}
+	\end{equation}
+	The target for this problem could be maximization of the price at which the chip can be sold:
+	\begin{equation}
+		\max_{x, y, z} 5x + 6\ln(y) + z
+		\label{eq:objective}
+	\end{equation}
 	
-	To narrow the solution space down I state additional constraints:
-	\begin{enumerate}
-	\item All variables must have different values.
-		\begin{equation}
-		\label{eq:allDifferent}
-		\begin{split}
-			S \ne E \land S \ne N \land & S \ne D \land \dots \land \\
-			E \ne N \land & E \ne D \land \dots \land \\
-			& N \ne D \land \dots
-		\end{split}
-		\end{equation}	
-	\item There must not be a trailing zero. Combined with the so-called all-different constraint \cite{allDifferent} from above this results in
-		\begin{equation}
-			\label{eq:trailingZero}
-			S \ne 0 \land M \ne 0
-		\end{equation}
-	\end{enumerate}
-	
-	A solver for constraint programming like \emph{Gecode} provides the necessary tools to define constraints like \refeq{eq:linearConstraint}, \refeq{eq:allDifferent} and \refeq{eq:trailingZero} in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected algorithm. This example contains only linear constraints and could therefore be solved through linear programming \cite[1]{linearProgramming}. As linear programming is only a subset of constraint programming the latter one is the more general one with more practical applications; not every problem in the real world is linear or can be linearized in a useful way. Consequently, constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
+	A solver for constraint programming like \emph{Gecode} provides the necessary tools to define constraints like \refeq{eq:areaConstraint}, \refeq{eq:costConstraint} and \refeq{eq:objective} in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected algorithm. If there would be only linear constraints like \refeq{eq:areaConstraint} it would be possible to solve this problem through linear programming \cite[1]{linearProgramming}. As linear programming is only a subset of constraint programming the latter one is the more general one with more practical applications; not every problem in the real world is linear or can be linearized in a useful way. Consequently, constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
 	
 	In the following I will describe the necessary steps to solve a problem with constraint programming and as example of an implementation I will always refer to \emph{Gecode} \cite{gecode}.
 	
