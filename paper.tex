@@ -125,64 +125,103 @@
 	\end{itemize}
 	
 	\subsection{Search Trees}
-	MISSING
+	
+	\begin{figure}
+		\center
+		\begin{tikzpicture}
+			\tikzstyle{arrow}=[draw, -latex]
+			\node[rectangle,draw] at (0, 2) (levelOne) {$x \in \mathbb{R}$};
+			
+			\node[rectangle,draw] at (-3, 1) (levelTwoElementOne) {$x \le 0$};
+			\coordinate[left=0.2cm of levelOne.south] (levelOnePointOne);
+	  		\path[arrow] (levelTwoElementOne) -- (levelOnePointOne);
+	  		
+			\node[rectangle,draw] at (0.5, 0.7) (levelTwoElementTwo) {$x > 0$};
+			\coordinate[right=0.2cm of levelOne.south] (levelOnePointTwo);
+	  		\path[arrow] (levelTwoElementTwo) -- (levelOnePointTwo);
+	  		
+			\node[rectangle,draw] at (-4, 0.2) (levelThreeElementOne) {$x < -2$};
+			\coordinate[left=0.2cm of levelTwoElementOne.south] (levelTwoElementOnePointOne);
+	  		\path[arrow] (levelThreeElementOne) -- (levelTwoElementOnePointOne);
+	  		
+			\node[rectangle,draw] at (-2, 0.2) (levelThreeElementTwo) {$x \ge -2$};
+			\coordinate[right=0.2cm of levelTwoElementOne.south] (levelTwoElementOnePointTwo);
+	  		\path[arrow] (levelThreeElementTwo) -- (levelTwoElementOnePointTwo);
+	  		
+			\node[rectangle,draw] at (-1.5, -0.5) (levelThreeElementThree) {$x = 1$};
+			\coordinate[left=0.2cm of levelTwoElementTwo.south] (levelTwoElementTwoPointOne);
+	  		\path[arrow] (levelThreeElementThree) -- (levelTwoElementTwoPointOne);
+	  		
+			\node[rectangle,draw] at (0, -0.5) (levelThreeElementFour) {$x = 2$};
+			\coordinate[right=0cm of levelTwoElementTwo.south] (levelTwoElementTwoPointTwo);
+	  		\path[arrow] (levelThreeElementFour) -- (levelTwoElementTwoPointTwo);
+	  		
+			\node[rectangle,draw] at (2, -0.5) (levelThreeElementFive) {$x \ne 2 \land x \ne 1$};
+			\coordinate[right=0.2cm of levelTwoElementTwo.south] (levelTwoElementTwoPointThree);
+	  		\path[arrow] (levelThreeElementFive) -- (levelTwoElementTwoPointThree);
+		\end{tikzpicture}
+		\caption{search tree on one variable $x$}
+		\label{fig:searchTree}
+	\end{figure}
+	
+	In constraint programming search trees, like the one in \reffig{fig:searchTree}, describe the partition of the search space and their nodes have names, depending on position in the tree. The root node is the one from where the search is started and all variable domains are still complete. This one is also the first one with a branch, where for the first time the search space is split up into disjoint sets. This approach is similiar to the divide-and-conquer technique as it reduces a complex problem into two or more parts with less complexity. The splitting, which adds additional constraints on the variables, is then recursively done with different heuristics to partition the search space into smaller parts. If one of the parts is small enough to decide if it is feasible the node can be called a either a deadend or a solution. To end up as the dead end there must be no feasible solutions left in the search space at this node. To turn the node into a solution it is necessary that all members of the reduced search space are valid considering the constraints.
 	
 	\subsection{Constraint Propagation}
 	Constraint propagation is a key concept in constraint programming as it reduces the size of the search space significantly. The term propagation refers in this area to the reduction of domains of variables which are infeasible, considering other constraints and affected variable domains. As the size of the variable domain is related to possibilities which have to be checked by a search, the constraint propagation is able to prune complete infeasible subtrees. Therefore the whole search process can be accelerated through constraint propagation.
 	
 	\begin{figure}
-	\center
-	\begin{tikzpicture}
-		\tikzstyle{arrow}=[draw, -latex]
-		\node[rectangle,draw] at (0, 3) (levelOne) {$x \in \{1, 5, 6\} \land y \in \{1, 2\}$};
-		
-		\node[rectangle,draw] at (-3, 2) (levelTwoElementOne) {$x = 1$};
-		\coordinate[left=1.5cm of levelOne.south] (levelOnePointOne);
-  		\path[arrow] (levelTwoElementOne) -- (levelOnePointOne);
-  		
-		\node[rectangle,draw] at (0, 2) (levelTwoElementTwo) {$x = 5$};
-		\coordinate[left=0cm of levelOne.south] (levelOnePointTwo);
-  		\path[arrow] (levelTwoElementTwo) -- (levelOnePointTwo);
-  		
-		\node[rectangle,draw] at (3, 2) (levelTwoElementThree) {$x = 6$};
-		\coordinate[right=1.5cm of levelOne.south] (levelOnePointThree);
-  		\path[arrow] (levelTwoElementThree) -- (levelOnePointThree);
-  		
-		\node[rectangle,draw] at (-3.6, 1) (levelThreeElementOne) {$y = 1$};
-		\coordinate[left=0.2cm of levelTwoElementOne.south] (levelTwoElementOnePointOne);
-  		\path[arrow] (levelThreeElementOne) -- (levelTwoElementOnePointOne);
-		\node[rectangle,draw] at (-3.6, 0) (levelFourElementOne) {\Checkmark};
-  		\path[arrow] (levelFourElementOne) -- (levelThreeElementOne);
-		\node[rectangle,draw] at (-2.4, 1) (levelThreeElementTwo) {$y = 2$};
-		\coordinate[right=0.2cm of levelTwoElementOne.south] (levelTwoElementOnePointTwo);
-  		\path[arrow] (levelThreeElementTwo) -- (levelTwoElementOnePointTwo);
-		\node[rectangle,draw] at (-2.4, 0) (levelFourElementTwo) {\Checkmark};
-  		\path[arrow] (levelFourElementTwo) -- (levelThreeElementTwo);
-  		
-		\node[rectangle,draw] at (-0.6, 1) (levelThreeElementThree) {$y = 1$};
-		\coordinate[left=0.2cm of levelTwoElementTwo.south] (levelTwoElementTwoPointOne);
-  		\path[arrow] (levelThreeElementThree) -- (levelTwoElementTwoPointOne);
-		\node[rectangle,draw] at (-0.6, 0) (levelFourElementThree) {$c_1 \lightning$};
-  		\path[arrow] (levelFourElementThree) -- (levelThreeElementThree);
-		\node[rectangle,draw] at (0.6, 1) (levelThreeElementFour) {$y = 2$};
-		\coordinate[right=0.2cm of levelTwoElementTwo.south] (levelTwoElementTwoPointTwo);
-  		\path[arrow] (levelThreeElementFour) -- (levelTwoElementTwoPointTwo);
-		\node[rectangle,draw] at (0.6, 0) (levelFourElementFour) {$c_1 \lightning$};
-  		\path[arrow] (levelFourElementFour) -- (levelThreeElementFour);
-  		
-		\node[rectangle,draw] at (2.4, 1) (levelThreeElementFive) {$y = 1$};
-		\coordinate[left=0.2cm of levelTwoElementThree.south] (levelTwoElementThreePointOne);
-  		\path[arrow] (levelThreeElementFive) -- (levelTwoElementThreePointOne);
-		\node[rectangle,draw] at (2.4, 0) (levelFourElementFive) {$c_1 \lightning$};
-  		\path[arrow] (levelFourElementFive) -- (levelThreeElementFive);
-		\node[rectangle,draw] at (3.6, 1) (levelThreeElementSix) {$y = 2$};
-		\coordinate[right=0.2cm of levelTwoElementThree.south] (levelTwoElementThreePointTwo);
-  		\path[arrow] (levelThreeElementSix) -- (levelTwoElementThreePointTwo);
-		\node[rectangle,draw] at (3.6, 0) (levelFourElementSix) {$c_1 \lightning$};
-  		\path[arrow] (levelFourElementSix) -- (levelThreeElementSix);
-	\end{tikzpicture}
-	\caption{search tree without constraint propagation}
-	\label{fig:bigTree}
+		\center
+		\begin{tikzpicture}
+			\tikzstyle{arrow}=[draw, -latex]
+			\node[rectangle,draw] at (0, 3) (levelOne) {$x \in \{1, 5, 6\} \land y \in \{1, 2\}$};
+			
+			\node[rectangle,draw] at (-3, 2) (levelTwoElementOne) {$x = 1$};
+			\coordinate[left=1.5cm of levelOne.south] (levelOnePointOne);
+	  		\path[arrow] (levelTwoElementOne) -- (levelOnePointOne);
+	  		
+			\node[rectangle,draw] at (0, 2) (levelTwoElementTwo) {$x = 5$};
+			\coordinate[left=0cm of levelOne.south] (levelOnePointTwo);
+	  		\path[arrow] (levelTwoElementTwo) -- (levelOnePointTwo);
+	  		
+			\node[rectangle,draw] at (3, 2) (levelTwoElementThree) {$x = 6$};
+			\coordinate[right=1.5cm of levelOne.south] (levelOnePointThree);
+	  		\path[arrow] (levelTwoElementThree) -- (levelOnePointThree);
+	  		
+			\node[rectangle,draw] at (-3.6, 1) (levelThreeElementOne) {$y = 1$};
+			\coordinate[left=0.2cm of levelTwoElementOne.south] (levelTwoElementOnePointOne);
+	  		\path[arrow] (levelThreeElementOne) -- (levelTwoElementOnePointOne);
+			\node[rectangle,draw] at (-3.6, 0) (levelFourElementOne) {\Checkmark};
+	  		\path[arrow] (levelFourElementOne) -- (levelThreeElementOne);
+			\node[rectangle,draw] at (-2.4, 1) (levelThreeElementTwo) {$y = 2$};
+			\coordinate[right=0.2cm of levelTwoElementOne.south] (levelTwoElementOnePointTwo);
+	  		\path[arrow] (levelThreeElementTwo) -- (levelTwoElementOnePointTwo);
+			\node[rectangle,draw] at (-2.4, 0) (levelFourElementTwo) {\Checkmark};
+	  		\path[arrow] (levelFourElementTwo) -- (levelThreeElementTwo);
+	  		
+			\node[rectangle,draw] at (-0.6, 1) (levelThreeElementThree) {$y = 1$};
+			\coordinate[left=0.2cm of levelTwoElementTwo.south] (levelTwoElementTwoPointOne);
+	  		\path[arrow] (levelThreeElementThree) -- (levelTwoElementTwoPointOne);
+			\node[rectangle,draw] at (-0.6, 0) (levelFourElementThree) {$c_1 \lightning$};
+	  		\path[arrow] (levelFourElementThree) -- (levelThreeElementThree);
+			\node[rectangle,draw] at (0.6, 1) (levelThreeElementFour) {$y = 2$};
+			\coordinate[right=0.2cm of levelTwoElementTwo.south] (levelTwoElementTwoPointTwo);
+	  		\path[arrow] (levelThreeElementFour) -- (levelTwoElementTwoPointTwo);
+			\node[rectangle,draw] at (0.6, 0) (levelFourElementFour) {$c_1 \lightning$};
+	  		\path[arrow] (levelFourElementFour) -- (levelThreeElementFour);
+	  		
+			\node[rectangle,draw] at (2.4, 1) (levelThreeElementFive) {$y = 1$};
+			\coordinate[left=0.2cm of levelTwoElementThree.south] (levelTwoElementThreePointOne);
+	  		\path[arrow] (levelThreeElementFive) -- (levelTwoElementThreePointOne);
+			\node[rectangle,draw] at (2.4, 0) (levelFourElementFive) {$c_1 \lightning$};
+	  		\path[arrow] (levelFourElementFive) -- (levelThreeElementFive);
+			\node[rectangle,draw] at (3.6, 1) (levelThreeElementSix) {$y = 2$};
+			\coordinate[right=0.2cm of levelTwoElementThree.south] (levelTwoElementThreePointTwo);
+	  		\path[arrow] (levelThreeElementSix) -- (levelTwoElementThreePointTwo);
+			\node[rectangle,draw] at (3.6, 0) (levelFourElementSix) {$c_1 \lightning$};
+	  		\path[arrow] (levelFourElementSix) -- (levelThreeElementSix);
+		\end{tikzpicture}
+		\caption{search tree without constraint propagation}
+		\label{fig:bigTree}
 	\end{figure}
 	
 	\begin{figure}
