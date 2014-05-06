@@ -123,20 +123,23 @@
 	\label{fig:squares}
 	\end{figure}
 	
-	As constraint programming is the generalization of linear programming it is at least possible do define linear constraints like \refeq{eq:linearConstraint}. Which statements are possible to make and how handy it is to do so varies very much from the programming language in which the problem is implemented and the used toolset. Typical constraints are the following
+	As constraint programming is the generalization of linear programming it is at least possible do define linear constraints like \refeq{eq:areaConstraint}. Which statements are possible to make and how handy it is to do so varies very much from the programming language in which the problem is implemented and the used toolset. Typical constraints are the following
 	\begin{itemize}
 		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
 		\item Inequalities: $x \ne y$, \dots
 		\item Relations: $x < 2 y$, $e^x < 4$, \dots
 	\end{itemize}
 	
-	Different constraint types like equalities and inequalities can be combined through logical operators to boolean expressions. To show the usage of this on an example I will give the implementation for the placement of two squares such that they do not overlap. The related variables are defined in \reffig{fig:squares}. This problem can be expressed by \cite[p. 101]{programmingGecode}
+	Different constraint types like equalities and inequalities can be combined through logical operators to boolean expressions. To show the usage of this  I want to come back to the example of the introduction, but this time with a different focus. Consider the number of components are already chosen and this time the task is to place the components on the chip. To simplify things I will only take two squares, which then should be placed such that they do not overlap. Of course, in a real world example first of all not only squares, but a lot more objects would have to be considered. Second, the objects will not be only squares and finally there would have to be a lot more constraints to be considered like minimum distances, a minimzation of the area usage, routing and so forth. 
+	
+	The related variables for this example are defined in \reffig{fig:squares}. The problem can be expressed by \cite[p. 101]{programmingGecode}
 	\begin{equation}
 	\begin{split}
 		x_1 + d_1 \le x_2 & \lor x_2 + d_2 \le x_1 \lor \\
 		y_1 + d_1 \le y_2 & \lor y_2 + d_2 \le y_1
 	\end{split}
 	\end{equation}
+	The task for the constraint programming tool at this point is then to find feasible solutions which fulfill the constraints.
 	
 	\subsection{Search Trees}
 	MISSING
