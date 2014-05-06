@@ -124,6 +124,12 @@
 		\item Relations: $x < 2 y$, $e^x < 4$, \dots
 	\end{itemize}
 	
+	Different constraint types can also be combined, for example inequalities or equalities through logic operators to boolean expressions. Some of these constraints may acquire special attention during the search for solutions to improve the execution reason. For this reason a lot of work has been done for example on the alldifferent constraint \cite{allDifferent}, which would be such a combined constraint.
+	\begin{equation}
+		\forall x_i, x_j \in D, i \ne j: x_i \ne x_j, 
+		\label{eq:alldifferent}
+	\end{equation}
+	
 	\subsection{Search Trees}
 	
 	\begin{figure}
