@@ -101,7 +101,7 @@
 	\end{equation}
 	The task for the constraint programming tool at this point is then to find feasible solutions which fulfill the constraints.
 	
-	A solver for constraint programming like \emph{Gecode} provides the necessary tools to define constraints like \refeq{eq:squares} in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected algorithm. If there would be only linear constraints like \refeq{eq:squares} it would be possible to solve this problem through linear programming \cite[1]{linearProgramming}. As linear programming is only a subset of constraint programming the latter one is the more general one with more practical applications; not every problem in the real world is linear or can be linearized in a useful way. Consequently, constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
+	A solver for constraint programming like \emph{Gecode} provides the necessary tools to define constraints like \refeq{eq:squares} in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected algorithm. If there would be only linear constraints like it would be possible to solve this problem through linear programming \cite[1]{linearProgramming}. As linear programming is only a subset of constraint programming the latter one is the more general one with more practical applications; not every problem in the real world is linear or can be linearized in a useful way. Consequently, constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
 	
 	In the following I will describe the necessary steps to solve a problem with constraint programming and as example of an implementation I will always refer to \emph{Gecode} \cite{gecode}.
 	
@@ -117,7 +117,7 @@
 	
 	\subsection{Constraint Types}
 	
-	As constraint programming is the generalization of linear programming it is at least possible do define linear constraints like \refeq{eq:squares}. Which statements are possible to make and how handy it is to do so varies from the programming language in which the problem is implemented and the used toolset. Typical constraints are
+	As constraint programming is the generalization of linear programming it is at least possible to define linear constraints. Which statements are possible to make and how handy it is to do so varies from the programming language in which the problem is implemented and the used toolset. Typical constraints are
 	\begin{itemize}
 		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
 		\item Inequalities: $x \ne y$, \dots
@@ -212,7 +212,7 @@
 	\end{equation}
 	Without constraint propagation and branching first on $x$ the search trees turns out to be the one in \reffig{fig:bigTree}. Obviously the right parts of this tree can already be pruned already at the root by propagation of constraint $c_1$ and therefore it is not necessary to create and evaluate these subtrees like in \reffig{fig:smallTree}.
 	
-	The actual implementation of constraint propagation differs again from one toolset to another, but the basic concepts are for sure the same REFERENZ FEHLT. As the topic of this paper is the implementation in \emph{Gecode} I will concentrate on this one.
+	The actual implementation of constraint propagation differs again from one toolset to another, but theory underneath is the same. As the topic of this paper is the implementation in \emph{Gecode} I will concentrate on this one.
 	
 	Constraints in \emph{Gecode} are always evaluated ahead of a further growth of a subtree, as it may be possible to prune some of the subtrees. The problem here is to decide in which order the constraints should be considered, and it may even be necessary to evaluate some constraints more often. A short example will explain this very well \cite[p.~575]{handbookCP}: Let there be two constraints 
 	\begin{equation}
