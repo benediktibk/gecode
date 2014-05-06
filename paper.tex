@@ -276,7 +276,7 @@
 	\item Depth-First Search Restart Optimization
 	\end{itemize}
 	
-	In the following part I will discuss these searches and additional techniques, which can be applied during searches in constraint programming.
+	In the following part I will discuss branching strategies, the Depth-first search and one of its variants, the Branch-and-bound search, the Limited-Discrepancy search as candidate for an improved backjumping-strategy, backjumping strategies in general and restart strategies.
 	
 	\subsubsection{Branching Strategies}
 	If at one node it is not possible to empty one variable domain or to reduce all variable domains to the size one it is necessary to make a decision: How should the next subtree be constructed? The question is answered by the selected branching strategy. No matter which one is selected, they all have in common that they create additional, temporary constraints, which are only applied to the specific subtrees. This step is called \emph{posting} a constraint on a branch.
@@ -292,6 +292,7 @@
 	
 	For all branching strategies there is a choice of freedom left, which can be used to implement some heuristics. This additional information is either gained during the search itself of predefined by the user.
 	
+	\subsubsection{Depth-First Search}
 	The Depth-first search is a good point to start, as it was also historical the first developed one. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for problems with such variable domains it is necessary to use for instance Branch-and-reduce. Sometimes the Depth-first search is also referred to as chronological backtrack search.
 	
 	The starting point is the root node, from where on the algorithm is called recursively. At every node mainly two steps are executed: First a constraint propagation and then a branching, which divides the search space into two disjoint sub spaces, on which the same algorithm is applied again. The search stops in a leave if either no branching is possible anymore and therefore a valid solution is found, or one or more variable domains are emptied, which indicates that in this leave no possible solution exists.
