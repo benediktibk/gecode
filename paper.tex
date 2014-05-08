@@ -338,29 +338,6 @@
 			\coordinate (f) at (2, 0);
 			\coordinate (g) at (intersection of e--c and f--d);
 			
-			\draw[very thick, fill=blue, fill opacity=0.1] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
-			\draw[pattern=north west lines, pattern color=gray] (a) -- (b) -- (c) -- (e) -- (a);
-			\draw[pattern=north east lines, pattern color=gray] (f) -- (g) -- (c) -- (b) -- (f);
-		\end{tikzpicture}	
-		\caption{Branch-and-reduce applied to a search space}
-		\label{fig:branchAndReduce}
-	\end{figure}
-	
-	As the basic concept of the finding solutions is the enumeration of possible candidates it is necessary to seperate the search space in a useful way, which is the task for the branch-and-reduce step. Actually this step is very similar to the concept of branching, it also depends on a certain heuristic to divide the search space into two or even more disjoint parts. This heuristic can either be selected by the user or be an general one, like splitting the biggest variable domain into two equal sized parts. If the basic search space contains a big amount of possible candidate solution one reduction may not be enough and therefore this step is applied recursively to the newly create subproblems. This process can be stopped if the number of solutions is reduced to an amount, where it is possible to enumerate all of them and check if they are optimal. A possible division into subproblems can be seen in \reffig{fig:branchAndReduce}, where for legibility always only one of the subproblems is divided further.
-	
-	The next step after branch-and-reduce is bounding, which is able to prune whole sub problems. In the following part I will consider the minimization of an objective function without a loss of generality. For the bounding it is first necessary to initialize a upper bound with a value, for example with $\infty$. This upper bound is updated during the process every time a new optimal solution is found to this new optimum. If a new possible solution is found which is above this upper bound the algorithm can prune it, as only the minimum solution is of interest. The actually pruning of subproblems is based on the relaxed optimum, which is the optimum of the problem without consideration that only discrete values are allowed. If this relaxed optimum for a certain subproblem is greater than the current upper bound it is possible to prune this sub problem, as it can not contain a better solution.
-	
-	\begin{figure}
-		\center
-		\begin{tikzpicture}
-			\coordinate (a) at (0, 0);
-			\coordinate (b) at (4, 0);
-			\coordinate (c) at (5, 3);
-			\coordinate (d) at (3, 6);
-			\coordinate (e) at (-1, 2);
-			\coordinate (f) at (2, 0);
-			\coordinate (g) at (intersection of e--c and f--d);
-			
 			\begin{scope}
 				\clip (a) -- (b) -- (c) -- (d) -- (e) -- (a);
 				\foreach \x in {-2,-1.5,...,5}
@@ -375,19 +352,29 @@
 			\draw[very thick] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
 			\draw (a) -- (b) -- (c) -- (e) -- (a);
 			\draw (f) -- (g) -- (c) -- (b) -- (f);
+			\draw[fill=blue, fill opacity=0.2] (c) -- (d) -- (e) -- (c);
+			\draw[fill=green, fill opacity=0.2] (a) -- (f) -- (g) -- (e) -- (a);
+			\draw[fill=brown, fill opacity=0.2] (f) -- (g) -- (c) -- (b) -- (f);
 			\node at (2.5, 4) {$P_0$};
 			\node at (1, 1) {$P_1$};
 			\node at (3.5, 1.5) {$P_2$};
 		\end{tikzpicture}	
-		\caption{Possible candidates for a solution and the related search space}
-		\label{fig:bounding}
+		\caption{Splitting of a search space into three subproblems and the possible candidates for solutions}
+		\label{fig:branchAndBound}
 	\end{figure}
 	
-	Consider for this \reffig{fig:bounding}, where already a certain optimum $f_1$ was found in subproblem $P_1$. If now the relaxed optimum $f_{P0}$ is worse than this optimum
+	As the basic concept of the finding solutions is the enumeration of possible candidates it is necessary to seperate the search space in a useful way, which is the task for the branch-and-reduce step. Actually this step is very similar to the concept of branching, it also depends on a certain heuristic to divide the search space into two or even more disjoint parts. This heuristic can either be selected by the user or be an general one, like splitting the biggest variable domain into two equal sized parts. If the basic search space contains a big amount of possible candidate solution one reduction may not be enough and therefore this step is applied recursively to the newly create subproblems. This process can be stopped if the number of solutions is reduced to an amount, where it is possible to enumerate all of them and check if they are optimal. A possible division into subproblems can be seen in \reffig{fig:branchAndReduce}, where for legibility always only one of the subproblems is divided further.
+	
+	The next step after branch-and-reduce is bounding, which is able to prune whole sub problems. In the following part I will consider the minimization of an objective function without a loss of generality. For the bounding it is first necessary to initialize a upper bound with a value, for example with $\infty$. This upper bound is updated during the process every time a new optimal solution is found to this new optimum. If a new possible solution is found which is above this upper bound the algorithm can prune it, as only the minimum solution is of interest. The actually pruning of subproblems is based on the relaxed optimum, which is the optimum of the problem without consideration that only discrete values are allowed. If this relaxed optimum for a certain subproblem is greater than the current upper bound it is possible to prune this sub problem, as it can not contain a better solution.
+	
+	Consider for this \reffig{fig:branchAndBound}, where already a certain optimum $f$ was found in subproblem $P_1$. If now the relaxed optimum $f_{P0}$ in $P_0$ and $f_{P2}$ in $P_2$ is worse than this optimum
 	\begin{equation}
-		f_{P0} > f_1
+		f_{P0} > f
 	\end{equation}
-	the whole subproblem $P_{0}$ can be pruned and it is not necessary to enumerate the solution candidates in it (or to apply split it further up).
+	\begin{equation}
+		f_{P2} > f
+	\end{equation}
+	the whole subproblems $P_{0}$ and $P_{2}$ can be pruned and it is not necessary to enumerate the solution candidates in them (or to split them further up).
 	
 	Combined with appropriate branching the bounding can prune several candiates at once, without the necessity to enumerate them. Therefore bounding is able to improve the performance of the search.
 	
