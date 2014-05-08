@@ -284,20 +284,7 @@
 	
 	The next decision to be made is which constraint should be evaluated first. In the example above the constraints were quite simple and therefore it would not make a big difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that fast to evaluate and for this case \emph{Gecode} defines for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
 	
-	\subsection{Search Algorithms}
-	In constraint programming search algorithms define the way the search tree is constructed and traversed, starting from the root node. To improve the performance of the search usually at every newly created node a constraint propagation is executed to narrow the search space down. Based on these two steps then either one, the best or no solution is found. What the actual result in the end is depends on the type of the search algorithm.
-	
-	In \emph{Gecode} it is possible to define custom strategies, but the user is supported at this point with some standard algorithms which can be used to build custom ones:
-	\begin{itemize}
-		\item Depth-first search
-		\item Limited Discrepancy search
-		\item Branch-and-bound search
-		\item Depth-first search restart optimization
-	\end{itemize}
-	
-	In the following part I will discuss branching strategies, the Depth-first search, the Branch-and-bound search, the Limited Discrepancy search as candidate for an improved backjumping-strategy, backjumping strategies in general and restart strategies.
-	
-	\subsubsection{Branching Strategies}
+		\subsection{Branching Strategies}
 	If at one node it is not possible to empty one variable domain or to reduce all variable domains to the size of one it is necessary to make a decision: How should the next subtree be constructed? The question is answered by the selected branching strategy. No matter which one is selected, they all have in common that they create additional, temporary constraints, which are only applied to the specific subtrees. This process is called \emph{posting} a constraint on a branch.
 	
 	The branching strategy depends on the variable domain: For Integer (and Boolean) variables there are three common strategies \cite[p.~87]{handbookCP} which differ in how the domain is distributed to the subtrees.
@@ -310,6 +297,19 @@
 	As for variables with a Float domain the enumeration and binary choice points are not feasible, the last one, domain splitting, is typically used. As termination criteria for a Float it is often necessary to define a certain epsilon $\epsilon \in \mathbb{R}_{>0}$ which describes the interval length, at which the solver states to have found a solution.
 	
 	For branching strategies there is a choice of freedom left, for instance where the interval is split up, and this freedom can be used to implement some heuristics. This additional information is either gained during the search itself or predefined by the user.
+	
+	\subsection{Search Algorithms}
+	In constraint programming search algorithms define the way the search tree is constructed and traversed, starting from the root node. To improve the performance of the search usually at every newly created node a constraint propagation is executed to narrow the search space down. Based on these two steps then either one, the best or no solution is found. What the actual result in the end is depends on the type of the search algorithm.
+	
+	In \emph{Gecode} it is possible to define custom strategies, but the user is supported at this point with some standard algorithms which can be used to build custom ones:
+	\begin{itemize}
+		\item Depth-first search
+		\item Limited Discrepancy search
+		\item Branch-and-bound search
+		\item Depth-first search restart optimization
+	\end{itemize}
+	
+	In the following part I will discuss the Depth-first search, the Branch-and-bound search, the Limited Discrepancy search as candidate for an improved backjumping-strategy, backjumping strategies in general and restart strategies.
 	
 	\subsubsection{Depth-First Search}
 	The Depth-first search was historical the first one which was developed. The idea behind this search algorithm is that every possible combination of variables is examined. Obviously in its basic form it can not be applied to problems with inifinite domains; for problems with such variable domains it is necessary to use for instance Branch-and-reduce. Sometimes the Depth-first search is also referred to as chronological backtrack search.
