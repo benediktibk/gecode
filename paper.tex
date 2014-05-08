@@ -59,7 +59,7 @@
   tabsize=3
 }
 
-\newcommand{\reffig}[1]{{figure \ref{#1}}}
+\newcommand{\reffig}[1]{{figure~\ref{#1}}}
 \newcommand{\refeq}[1]{{(\ref{#1})}}
 
 \begin{document}
@@ -74,7 +74,7 @@
 	\end{abstract}
 	
 	\section{Introduction}
-	Constraint programming is a method to solve mathematical problems through the formulation of constraints, which describe the desired solution. As a formal and exact definition, like it can be found in \cite[p.~16]{handbookCP} for constraint programming, is not as helpful as an example, I would like to give you a short overview on the topic through the problem of the placement of two squares such that they do not overlap.	
+	Constraint programming is a method to solve mathematical problems through the formulation of constraints, which describe the desired solution. A formal and exact definition for constraint programming can be found in \cite[p.~16]{handbookCP}. To visualize the topic better I will start with the problem of the placement of two squares such that they do not overlap.	
 	
 	\begin{figure}
 		\center
@@ -88,7 +88,7 @@
 			\draw[arrows=<->] (2.2, 1.5) -- (2.2, 2);
 			\node at (2.5, 1.75) {$d_2$};
 		\end{tikzpicture}
-		\caption{two squares which should not overlap}
+		\caption{Two squares which should not overlap}
 		\label{fig:squares}
 	\end{figure}
 	
