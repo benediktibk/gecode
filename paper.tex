@@ -66,7 +66,7 @@
 	\title{Constraint Programming - Inside Gecode}
 	\author{Benedikt~Schmidt}
 	\markboth{Advanced Seminar for Security in Information Technology, Summer Term 2014}%
-	{Benedikt Schmidt: Constraint Programming - Inside Gecode}	
+	{Benedikt Schmidt: Constraint Programming - Inside \emph{Gecode}}	
 	\maketitle	
 	
 	\begin{abstract}	
@@ -295,7 +295,7 @@
 		\item Depth-first search restart optimization
 	\end{itemize}
 	
-	In the following part I will discuss branching strategies, the Depth-first search, the Branch-and-bound search, the Limited-Discrepancy search as candidate for an improved backjumping-strategy, backjumping strategies in general and restart strategies.
+	In the following part I will discuss branching strategies, the Depth-first search, the Branch-and-bound search, the Limited Discrepancy search as candidate for an improved backjumping-strategy, backjumping strategies in general and restart strategies.
 	
 	\subsubsection{Branching Strategies}
 	If at one node it is not possible to empty one variable domain or to reduce all variable domains to the size of one it is necessary to make a decision: How should the next subtree be constructed? The question is answered by the selected branching strategy. No matter which one is selected, they all have in common that they create additional, temporary constraints, which are only applied to the specific subtrees. This process is called \emph{posting} a constraint on a branch.
@@ -380,7 +380,7 @@
 	Combined with appropriate branching the bounding can prune several candiates at once, without the necessity to enumerate them. Therefore bounding is able to improve the performance of the search.
 	
 	\subsubsection{Limited Discrepancy Search}
-	Limited Discrepancy search falls into the category of Best-first searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy}. It depends on some heurisitics for the tree, which are determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive. Second, heuristics work worse the farther away from the solution they are applied, therefore decisions close to the root node are likely to fail. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement compared to a chronological backtrack was shown by experimental results and theoretically proven in \cite{limitedDiscrepancy}.
+	The Limited Discrepancy search falls into the category of Best-first searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy}. It depends on some heurisitics for the tree, which are determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive. Second, heuristics work worse the farther away from the solution they are applied, therefore decisions close to the root node are likely to fail. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement compared to a chronological backtrack was shown by experimental results and theoretically proven in \cite{limitedDiscrepancy}.
 	
 	\subsubsection{Backjumping}
 	A specific version of backjumping was already mentioned, the Limited Discrepancy search, where instead of jumping one node back the algorithm always jumps as far back to the root node as possible. In general this is proven to be better than the chronological backtracking \cite{limitedDiscrepancy}, but for certain problems it may be possible to find better nodes to jump back. A jump back in the search tree means to detect a so-called nogood decision, which caused the violation of a constraint in the deadend. How these nogoods must be selected and stored to improve the search depends heavily on the specific field and if it is done wrong the backjumping can even be less efficient than chronological backtracking \cite[p.~100]{handbookCP}.
