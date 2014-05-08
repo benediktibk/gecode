@@ -328,6 +328,7 @@
 	A branch-and-bound search is an algorithm for optimization of an objective function under certain constraints and only discrete possible candidates for a solution. To fulfill the constraints the first step, branch-and-reduce is applied, and the second one, bounding, is used to prune whole areas with non-optimal solutions.
 	
 	\begin{figure}
+		\center
 		\begin{tikzpicture}
 			\coordinate (a) at (0, 0);
 			\coordinate (b) at (4, 0);
@@ -341,7 +342,6 @@
 			\draw[pattern=north west lines, pattern color=gray] (a) -- (b) -- (c) -- (e) -- (a);
 			\draw[pattern=north east lines, pattern color=gray] (f) -- (g) -- (c) -- (b) -- (f);
 		\end{tikzpicture}	
-		\center
 		\caption{Branch-and-reduce applied to a search space}
 		\label{fig:branchAndReduce}
 	\end{figure}
