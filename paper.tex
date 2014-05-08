@@ -34,6 +34,7 @@
 \usetikzlibrary{shapes}
 \usetikzlibrary{calc}
 \usetikzlibrary{positioning}
+\usetikzlibrary{patterns}
 \usepackage{listings}
 \usepackage{color}
 
@@ -324,11 +325,71 @@
 	This algorithm is again a complete one, therefore it will always find the best solution if one exists. This algorithm does not inherit the bad memory characteristics from the Depth-first search as only one solution is stored, but the search is still exhaustive and can be very slow, depending on the size of the variable domains.
 	
 	\subsubsection{Branch-and-Bound Search}
-	Branch-and-bound refers actually to two parts, a Branch-and-reduce search and bounding. If there is no further reduction of variable domains possible the step of Branch-and-reduce can be applied, which means applying a branching strategy to split the search space into two disjoints sets. One example for a heuristic for branching would be to split the biggest domain into two equal sized intervals.
+	A branch-and-bound search is an algorithm for optimization of an objective function under certain constraints and only discrete possible candidates for a solution. To fulfill the constraints the first step, branch-and-reduce is applied, and the second one, bounding, is used to prune whole areas with non-optimal solutions.
 	
-	Bounding is then the part which transforms the Branch-and-reduce search into an optimization. To be able to do this an objective function is necessary. In the following discussion on bounding I will assume that the objective function has to be minimized without a loss of generality.
+	\begin{figure}
+		\begin{tikzpicture}
+			\coordinate (a) at (0, 0);
+			\coordinate (b) at (4, 0);
+			\coordinate (c) at (5, 3);
+			\coordinate (d) at (3, 6);
+			\coordinate (e) at (-1, 2);
+			\coordinate (f) at (2, 0);
+			\coordinate (g) at (intersection of e--c and f--d);
+			
+			\draw[very thick, fill=blue, fill opacity=0.1] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+			\draw[pattern=north west lines, pattern color=gray] (a) -- (b) -- (c) -- (e) -- (a);
+			\draw[pattern=north east lines, pattern color=gray] (f) -- (g) -- (c) -- (b) -- (f);
+		\end{tikzpicture}	
+		\center
+		\caption{Branch-and-reduce applied to a search space}
+		\label{fig:branchAndReduce}
+	\end{figure}
 	
-	Every Branch splits the total problem into two sub problems. With some additional constraints, for example one variable must be an integer $x \in \mathbb{Z}$, it may happen that the optimum of a sub problem without this constraint is not the same one as if this additional constraint is considered. For finding the first optimum the trick is to branch in ways that a certain sub problem ends up with only a few possible candidates left, which then can be tested each. With this first optimum the search algorithm has then a so far best optimum which can be used as upper bound for the optimum. If for one sub problem the relaxed optimum, the optimum without for example the constraint of integrity, is worse than this upper bound the sub problem can be pruned. Only if the relaxed optimum turns out to be better than the best optimum so far it is necessary to look further into this sub problem and either test the left candidates or apply additional branching.
+	As the basic concept of the finding solutions is the enumeration of possible candidates it is necessary to seperate the search space in a useful way, which is the task for the branch-and-reduce step. Actually this step is very similar to the concept of branching, it also depends on a certain heuristic to divide the search space into two or even more disjoint parts. This heuristic can either be selected by the user or be an general one, like splitting the biggest variable domain into two equal sized parts. If the basic search space contains a big amount of possible candidate solution one reduction may not be enough and therefore this step is applied recursively to the newly create subproblems. This process can be stopped if the number of solutions is reduced to an amount, where it is possible to enumerate all of them and check if they are optimal. A possible division into subproblems can be seen in \reffig{fig:branchAndReduce}, where for legibility always only one of the subproblems is divided further.
+	
+	The next step after branch-and-reduce is bounding, which is able to prune whole sub problems. In the following part I will consider the minimization of an objective function without a loss of generality. For the bounding it is first necessary to initialize a upper bound with a value, for example with $\infty$. This upper bound is updated during the process every time a new optimal solution is found to this new optimum. If a new possible solution is found which is above this upper bound the algorithm can prune it, as only the minimum solution is of interest. The actually pruning of subproblems is based on the relaxed optimum, which is the optimum of the problem without consideration that only discrete values are allowed. If this relaxed optimum for a certain subproblem is greater than the current upper bound it is possible to prune this sub problem, as it can not contain a better solution.
+	
+	\begin{figure}
+		\begin{tikzpicture}
+			\coordinate (a) at (0, 0);
+			\coordinate (b) at (4, 0);
+			\coordinate (c) at (5, 3);
+			\coordinate (d) at (3, 6);
+			\coordinate (e) at (-1, 2);
+			\coordinate (f) at (2, 0);
+			\coordinate (g) at (intersection of e--c and f--d);
+			
+			\begin{scope}
+				\clip (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+				\foreach \x in {-2,-1.5,...,5}
+				{
+	      			\foreach \y in {0,0.5,...,6}
+	      			{
+	        			\node[draw,circle,inner sep=0.2pt,fill,gray] at (\x,\y) {};
+	      			}
+	    		}
+    		\end{scope}
+			
+			\draw[very thick] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+			\draw (a) -- (b) -- (c) -- (e) -- (a);
+			\draw (f) -- (g) -- (c) -- (b) -- (f);
+			\node at (2.5, 4) {$P_0$};
+			\node at (1, 1) {$P_1$};
+			\node at (3.5, 1.5) {$P_2$};
+		\end{tikzpicture}	
+		\center
+		\caption{Possible candidates for a solution and the related search space}
+		\label{fig:bounding}
+	\end{figure}
+	
+	Consider for this \reffig{fig:bounding}, where already a certain optimum $f_1$ was found in subproblem $P_1$. If now the relaxed optimum $f_{P0}$ is worse than this optimum
+	\begin{equation}
+		f_{P0} > f_1
+	\end{equation}
+	the whole subproblem $P_{0}$ can be pruned and it is not necessary to enumerate the solution candidates in it (or to apply split it further up).
+	
+	Combined with appropriate branching the bounding can prune several candiates at once, without the necessity to enumerate them. Therefore bounding is able to improve the performance of the search.
 	
 	\subsubsection{Limited Discrepancy Search}
 	Limited Discrepancy Search falls into the category of Best-first searches and was first mentioned by Harvey and Ginsberg in \cite{limitedDiscrepancy}. It depends on some heurisitics for the tree, which are determined through branching strategies. The basic concept is that during a chronological backtrack search a wrong turn close to the root is first of all very expensive. Second, heuristics work worse the farther away from the solution they are applied, therefore decisions close to the root node are possible to fail. Consequently, in a chronological backtrack search the worst decisions are the most expensive ones. The Limited Discrepancy Search solves exactly this problem as it suggests to change rather the decisions made close to the root than the ones the search made later. The improvement compared to a chronological backtrack was shown by experimental results and theoretical proven in \cite{limitedDiscrepancy}.
