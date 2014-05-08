@@ -70,7 +70,7 @@
 	\maketitle	
 	
 	\begin{abstract}	
-		Constraint programming is a way to describe and solve mathematical problems with arbitrary constraints. In the following paper I will explain the implemented algorithms in Gecode, a tool which can be used to solve problems through constraint programming.
+		Constraint programming is a way to describe and solve mathematical problems with arbitrary constraints. In the following paper I will explain the implemented algorithms in \emph{Gecode}, a tool which can be used to solve problems through constraint programming.
 	\end{abstract}
 	
 	\section{Introduction}
@@ -102,7 +102,7 @@
 	\end{equation}
 	The task for the constraint programming tool at this point is then to find feasible solutions which fulfill the constraints.
 	
-	A solver for constraint programming like \emph{Gecode} provides the necessary tools to define constraints like \refeq{eq:squares} in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected algorithm. If there would be only linear constraints like it would be possible to solve this problem through linear programming \cite[1]{linearProgramming}. As linear programming is only a subset of constraint programming the latter one is the more general one with more practical applications; not every problem in the real world is linear or can be linearized in a useful way. Consequently, constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design and robotics \cite[p.~221]{trendsInCP}.
+	A solver for constraint programming like \emph{Gecode} provides the necessary tools to define constraints like \refeq{eq:squares} in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected algorithm. If there would be only linear constraints like \refeq{eq:linear} it would be even possible to solve the problem through linear programming \cite[1]{linearProgramming}. As linear programming is only a subset of constraint programming the latter one is the more general one with more practical applications; not every problem in the real world is linear or can be linearized in a useful way. Consequently, constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design or robotics \cite[p.~221]{trendsInCP}.
 	
 	In the following I will describe the necessary steps to solve a problem with constraint programming and as example of an implementation I will always refer to \emph{Gecode} \cite{gecode}.
 	
@@ -266,6 +266,7 @@
 	\end{equation}
 	\begin{equation}
 		c_2: y - x - 1 = 0
+		\label{eq:linear}
 	\end{equation}
 	and let the variable domains be $x, y \in [-4, 4]$. Starting with the evaluation of constraint one follows a chain of reductions of the variable domains, based only on constraint propagation:
 	\begin{equation}
