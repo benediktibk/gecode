@@ -118,14 +118,14 @@
 	
 	\subsection{Constraint Types}
 	
-	As constraint programming is the generalization of linear programming it is at least possible to define linear constraints. Which statements are possible to make and how handy it is to do so varies from the programming language in which the problem is implemented and the used toolset. Typical constraints are
+	As constraint programming is the generalization of linear programming it is at least possible to define linear constraints. Which statements are possible to make and how comfortable it is to do so varies from the programming language in which the problem is implemented and the used toolset. Typical constraints are
 	\begin{itemize}
 		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
 		\item Inequalities: $x \ne y$, \dots
 		\item Relations: $x < 2 y$, $e^x < 4$, \dots
 	\end{itemize}
 	
-	Different constraint types can also be combined, for example inequalities or equalities through logic operators to boolean expressions. Some of these constraints may acquire special attention during the search for solutions to improve the execution reason. For this reason a lot of work has been done for example on the alldifferent constraint \cite{allDifferent}, which would be such a combined constraint.
+	Different constraint types can also be combined, for example inequalities or equalities through logic operators to boolean expressions. Some of these constraints may acquire special attention during the search for solutions to improve the runtime of the search. For this reason a lot of work has been done for example on the alldifferent constraint \cite{allDifferent}, which would be such a combined constraint.
 	\begin{equation}
 		\forall x_i, x_j \in D, i \ne j: x_i \ne x_j, 
 		\label{eq:alldifferent}
@@ -171,7 +171,7 @@
 		\label{fig:searchTree}
 	\end{figure}
 	
-	In constraint programming search trees, like the one in \reffig{fig:searchTree}, describe the partition of the search space and their nodes have names, depending on position in the tree. The root node is the one from where the search is started and all variable domains are still complete. This one is also the first one with a branch, where for the first time the search space is split up into disjoint sets. This approach is similiar to the divide-and-conquer technique as it reduces a complex problem into two or more parts with less complexity. The splitting, which adds additional constraints on the variables, is then recursively done with different heuristics to partition the search space into smaller parts. If one of the parts is small enough to decide if it is feasible the node can be called a either a deadend or a solution. To end up as the dead end there must be no feasible solutions left in the search space at this node. To turn the node into a solution it is necessary that all members of the reduced search space are valid considering the constraints.
+	In constraint programming search trees, like the one in \reffig{fig:searchTree}, describe the partition of the search space and their nodes have names, depending on their position in the tree. The root node is the one from where the search is started and all variable domains are still complete. This one is also the first one with a branch, where the search space is split up into disjoint sets. This approach is similiar to the divide-and-conquer technique as it reduces a complex problem into two or more parts with less complexity. The splitting, which adds additional constraints on the variables, is then recursively done with different heuristics to partition the search space into smaller parts. If one of the parts is small enough to decide if it is feasible the node can be called a either a deadend or a solution. To end up as the dead end there must be no feasible solutions left in the search space at this node. To turn the node into a solution it is necessary that all members of the reduced search space are valid considering the constraints.
 	
 	\subsection{Constraint Propagation}
 	Constraint propagation is a key concept in constraint programming as it reduces the size of the search space significantly. The term propagation refers in this area to the reduction of domains of variables which are infeasible, considering other constraints and affected variable domains. As the size of the variable domain is related to possibilities which have to be checked by a search, the constraint propagation is able to prune complete infeasible subtrees. Therefore the whole search process can be accelerated through constraint propagation.
@@ -256,11 +256,11 @@
 	\begin{equation}
 		c_1:\ x \le y
 	\end{equation}
-	Without constraint propagation and branching first on $x$ the search trees turns out to be the one in \reffig{fig:bigTree}. Obviously the right parts of this tree can already be pruned already at the root by propagation of constraint $c_1$ and therefore it is not necessary to create and evaluate these subtrees like in \reffig{fig:smallTree}.
+	Without constraint propagation and branching first on $x$ the search trees turns out to be the one in \reffig{fig:bigTree}. Obviously the right parts of this tree can be already pruned at the root by propagation of constraint $c_1$ and therefore it is not necessary to create and evaluate these subtrees. With constraint propagation fewer branches have to be made, like it can be seen in \reffig{fig:smallTree}.
 	
-	The actual implementation of constraint propagation differs again from one toolset to another, but theory underneath is the same. As the topic of this paper is the implementation in \emph{Gecode} I will concentrate on this one.
+	The actual implementation of constraint propagation differs again from one toolset to another, but the theory underneath is the same. As the topic of this paper is the implementation in \emph{Gecode} I will concentrate on this one.
 	
-	Constraints in \emph{Gecode} are always evaluated ahead of a further growth of a subtree, as it may be possible to prune some of the subtrees. The problem here is to decide in which order the constraints should be considered, and it may even be necessary to evaluate some constraints more often. A short example will explain this very well \cite[p.~575]{handbookCP}: Let there be two constraints 
+	Constraints in \emph{Gecode} are always evaluated ahead of a further growth of a subtree, as it may be possible to prune some of the subtrees. The problem here is to decide in which order the constraints should be considered, and it may be even necessary to evaluate some constraints more often. A short example will explain this better \cite[p.~575]{handbookCP}: Let there be two constraints 
 	\begin{equation}
 		c_1: y - x^2 = 0
 	\end{equation}
@@ -268,7 +268,7 @@
 		c_2: y - x - 1 = 0
 		\label{eq:linear}
 	\end{equation}
-	and let the variable domains be $x, y \in [-4, 4]$. Starting with the evaluation of constraint one follows a chain of reductions of the variable domains, based only on constraint propagation:
+	and let the variable domains be $x, y \in [-4, 4]$. Starting with the evaluation of constraint $c_1$ follows a chain of reductions of the variable domains, based only on constraint propagation:
 	\begin{equation}
 	\begin{split}
 		c_1:\ &y \in [-4, 4] \rightarrow y \in [0, 4] \\
@@ -282,7 +282,7 @@
 	
 	To implement this repeated evaluation of constraints in \emph{Gecode} all constraints subscribe to the domains of the variables which are part of them. With this method the constraints get noticed whenever a variable domain is reduced and they can signal the system that they need to be evaluated once again.
 	
-	The next decision to be made is which constraint should be evaluated first. In the example above the constraints were quite simple and therefore it won't make a big difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that easy to evaluate and for this case \emph{Gecode} defines for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
+	The next decision to be made is which constraint should be evaluated first. In the example above the constraints were quite simple and therefore it would not make a big difference to evaluate first $c_1$ or $c_2$, the search will take nearly the same time. Unfortunately not all constraints are that fast to evaluate and for this case \emph{Gecode} defines for every constraint a certain cost \cite[p.~275]{programmingGecode}. Based on this cost the constraints are sorted into buckets which are then iterated from the constraints with lower costs to the ones with higher costs. This means, whenever a variable domain is changed, the first try is to use constraints with the lowest possible cost and only if none of them needs to be evaluated constraints with higher costs are considered.
 	
 	\subsection{Search Algorithms}
 	In constraint programming search algorithms define the way the search tree is constructed, starting from the root node. To improve the performance of the search usually at every newly created node a constraint propagation is executed to narrow the search space down. Based on these two steps then either one, the best or no solution is found. What the actual result in the end is depends on the type of search algorithm.
