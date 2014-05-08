@@ -104,7 +104,7 @@
 	
 	A solver for constraint programming like \emph{Gecode} provides the necessary tools to define constraints like \refeq{eq:squares} in their most natural form as equations and inequations and will find all possible solutions or just one of them, depending on the selected algorithm. If there would be only linear constraints like \refeq{eq:linear} it would be even possible to solve the problem through linear programming \cite[1]{linearProgramming}. As linear programming is only a subset of constraint programming the latter one is the more general one with more practical applications; not every problem in the real world is linear or can be linearized in a useful way. Consequently, constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design or robotics \cite[p.~221]{trendsInCP}.
 	
-	In the following I will describe the necessary steps to solve a problem with constraint programming and as example of an implementation I will always refer to \emph{Gecode} \cite{gecode}.
+	In the following I will describe the necessary steps to describe and solve a problem with constraint programming: Variables, constraints, search trees, constraint propagation and search algorithms. As example of an implementation I will always refer to \emph{Gecode} \cite{gecode}.
 	
 	\section{State of the Art}
 	\subsection{Variable Domains}
