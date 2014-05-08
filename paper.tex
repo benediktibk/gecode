@@ -351,6 +351,7 @@
 	The next step after branch-and-reduce is bounding, which is able to prune whole sub problems. In the following part I will consider the minimization of an objective function without a loss of generality. For the bounding it is first necessary to initialize a upper bound with a value, for example with $\infty$. This upper bound is updated during the process every time a new optimal solution is found to this new optimum. If a new possible solution is found which is above this upper bound the algorithm can prune it, as only the minimum solution is of interest. The actually pruning of subproblems is based on the relaxed optimum, which is the optimum of the problem without consideration that only discrete values are allowed. If this relaxed optimum for a certain subproblem is greater than the current upper bound it is possible to prune this sub problem, as it can not contain a better solution.
 	
 	\begin{figure}
+		\center
 		\begin{tikzpicture}
 			\coordinate (a) at (0, 0);
 			\coordinate (b) at (4, 0);
@@ -378,7 +379,6 @@
 			\node at (1, 1) {$P_1$};
 			\node at (3.5, 1.5) {$P_2$};
 		\end{tikzpicture}	
-		\center
 		\caption{Possible candidates for a solution and the related search space}
 		\label{fig:bounding}
 	\end{figure}
