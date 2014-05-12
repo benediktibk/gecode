@@ -108,7 +108,7 @@
 	
 	\section{State of the Art}
 	\subsection{Variable Domains}
-	In constraint programming, a variable is connected to a set of possible values, the so called domain. Depending on the domain, a variable is called an integer, Boolean or floating variable. Possible ranges for a variable $x$ of each domain are:
+	In constraint programming a variable is connected to a set of possible values, the so called domain. Depending on the domain, a variable is called an integer, Boolean or floating variable. Possible ranges for a variable $x$ of each domain are:
 	\begin{itemize}
 		\item Integer: finite or infinite sets like $x \in \mathbb{N}$, $x \in \{-5, 4, 10\}$, \dots
 		\item Bool: $x \in \{\text{true}, \text{false}\}$
@@ -300,7 +300,7 @@
 	\subsection{Search Algorithms}
 	Search algorithms define the way the search tree is constructed and traversed, starting from the root node. To improve the performance of the search at every node a constraint propagation is executed, which may narrow the search space down. Then, based on these two steps, either one, the best or no solution is found. The actual result of the search depends on the type of the search algorithm.
 	
-	In \emph{Gecode}, it is possible to define custom strategies. However, the user is supported at this point with some standard algorithms which he can use to build custom ones:
+	In \emph{Gecode} it is possible to define custom strategies. However, the user is supported at this point with some standard algorithms which he can use to build custom ones:
 	\begin{itemize}
 		\item Depth-first search
 		\item Limited discrepancy search
@@ -308,14 +308,14 @@
 		\item Depth-first search restart optimization
 	\end{itemize}
 	
-	In the following part, I will discuss the depth-first search, the branch-and-bound search, the limited discrepancy search as candidate for an improved backjumping-strategy, backjumping strategies in general and restart strategies.
+	In the following part I will discuss the depth-first search, the branch-and-bound search, the limited discrepancy search as candidate for an improved backjumping-strategy, backjumping strategies in general and restart strategies.
 	
 	\subsubsection{Depth-First Search}
-	The depth-first search was historical the first one which was developed, therefore it is a good point to start explaining search algorithms. The idea behind this search algorithm is that every possible combination of variables is examined. In its basic form, it can not be applied to problems with infinite domains; for problems with such variable domains it is necessary to use for instance branch-and-reduce. Sometimes the depth-first search is also referred to as chronological backtrack search.
+	The depth-first search was historical the first one which was developed, therefore it is a good point to start explaining search algorithms. The idea behind this search algorithm is that every possible combination of variables is examined. In its basic form it can not be applied to problems with infinite domains; for problems with such variable domains it is necessary to use for instance branch-and-reduce. Sometimes the depth-first search is also referred to as chronological backtrack search.
 	
 	The starting point for the depth-first search is the root node, from where on the algorithm is called recursively. At every node, mainly two steps are executed: First, a constraint propagation to reduce the variable domains and second a branching, which divides the search space into two disjoint sub spaces, on which the same algorithm is applied again. The search stops in a leaf of the search tree if either no branching is possible and therefore a valid solution is found, or one or more variable domains are emptied, which indicates that in this leave no possible solution exists.
 	
-	This search is a so-called complete algorithm as it can be proven that all possible solutions will be found \cite[p.~85]{handbookCP}. Because of this characteristic, it is very useful to prove for example that for a certain problem no solution exists. The main drawback is the execution time, as it does an exhaustive search. Maybe even the memory usage can become a problem if during the search many solutions are found.
+	This search is a so-called complete algorithm as it can be proven that all possible solutions will be found \cite[p.~85]{handbookCP}. Because of this characteristic it is very useful to prove for example that for a certain problem no solution exists. The main drawback is the execution time, as it does an exhaustive search. Maybe even the memory usage can become a problem if during the search many solutions are found.
 	
 	By stopping the search after the first feasible solution is found the algorithm can often be accelerated. Although this slightly modified version is not complete anymore, in practice it is in some areas sufficient to know just one valid solution.
 	
