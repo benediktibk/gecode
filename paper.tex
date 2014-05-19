@@ -253,6 +253,73 @@
 	\end{tikzpicture}
 	\caption{search tree with constraint propagation}
 	\label{fig:smallTree}
+	\end{figure}\begin{figure}
+		\center
+		\subfloat[First step]
+		{
+			\begin{tikzpicture}
+				\coordinate (a) at (1, 0);
+				\coordinate (b) at (3, 0);
+				\coordinate (c) at (3.5, 2);
+				\coordinate (d) at (2, 4);
+				\coordinate (e) at (0.5, 1);
+				\coordinate (f) at (2, 0);
+				\coordinate (g) at (intersection of e--c and f--d);
+				
+				\begin{scope}
+					\clip (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+					\foreach \x in {-2,-1.5,...,5}
+					{
+		      			\foreach \y in {0,0.5,...,6}
+		      			{
+		        			\node[draw,circle,inner sep=0.2pt,fill,gray] at (\x,\y) {};
+		      			}
+		    		}
+	    		\end{scope}
+				
+				\draw[very thick] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+				\draw (a) -- (b) -- (c) -- (e) -- (a);
+				\draw[fill=blue, fill opacity=0.2] (c) -- (d) -- (e) -- (c);
+				\draw[fill=green, fill opacity=0.2] (a) -- (b) -- (c) -- (e) -- (a);
+				\node at (2.25, 2.75) {$P_0$};
+				\node at (1.75, 0.75) {$P_0'$};
+			\end{tikzpicture}	
+		}
+		\subfloat[Second step]
+		{		
+			\begin{tikzpicture}
+				\coordinate (a) at (1, 0);
+				\coordinate (b) at (3, 0);
+				\coordinate (c) at (3.5, 2);
+				\coordinate (d) at (2, 4);
+				\coordinate (e) at (0.5, 1);
+				\coordinate (f) at (2, 0);
+				\coordinate (g) at (intersection of e--c and f--d);
+				
+				\begin{scope}
+					\clip (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+					\foreach \x in {-2,-1.5,...,5}
+					{
+		      			\foreach \y in {0,0.5,...,6}
+		      			{
+		        			\node[draw,circle,inner sep=0.2pt,fill,gray] at (\x,\y) {};
+		      			}
+		    		}
+	    		\end{scope}
+				
+				\draw[very thick] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+				\draw (a) -- (b) -- (c) -- (e) -- (a);
+				\draw (f) -- (g) -- (c) -- (b) -- (f);
+				\draw[fill=blue, fill opacity=0.2] (c) -- (d) -- (e) -- (c);
+				\draw[fill=green, fill opacity=0.2] (a) -- (f) -- (g) -- (e) -- (a);
+				\draw[fill=brown, fill opacity=0.2] (f) -- (g) -- (c) -- (b) -- (f);
+				\node at (2.25, 2.75) {$P_0$};
+				\node at (1.25, 0.75) {$P_1$};
+				\node at (2.75, 1.25) {$P_2$};
+			\end{tikzpicture}	
+		}
+		\caption{Splitting of a search space into three subproblems and the possible candidates for solutions}
+		\label{fig:branchAndBound}
 	\end{figure}
 	
 	To illustrate this effect consider a problem based on two variables $x \in \{1, 5, 6\}$ and $y \in \{1, 2\}$ and the constraint
@@ -332,75 +399,6 @@
 	A branch-and-bound search is an algorithm for optimization of an objective function under certain constraints and only discrete possible candidates for a solution. The difference to the depth-first search with optimization is the usage of a so-called relaxed optimum, the optimum without consideration of the required discreetness.
 	
 	During a branch-and-bound search two steps are executed: branch-and-reduce and bounding. The first one partitions the search space and the second one prunes whole areas with non-optimal solutions.
-	
-	\begin{figure}
-		\center
-		\subfloat[First step]
-		{
-			\begin{tikzpicture}
-				\coordinate (a) at (1, 0);
-				\coordinate (b) at (3, 0);
-				\coordinate (c) at (3.5, 2);
-				\coordinate (d) at (2, 4);
-				\coordinate (e) at (0.5, 1);
-				\coordinate (f) at (2, 0);
-				\coordinate (g) at (intersection of e--c and f--d);
-				
-				\begin{scope}
-					\clip (a) -- (b) -- (c) -- (d) -- (e) -- (a);
-					\foreach \x in {-2,-1.5,...,5}
-					{
-		      			\foreach \y in {0,0.5,...,6}
-		      			{
-		        			\node[draw,circle,inner sep=0.2pt,fill,gray] at (\x,\y) {};
-		      			}
-		    		}
-	    		\end{scope}
-				
-				\draw[very thick] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
-				\draw (a) -- (b) -- (c) -- (e) -- (a);
-				\draw[fill=blue, fill opacity=0.2] (c) -- (d) -- (e) -- (c);
-				\draw[fill=green, fill opacity=0.2] (a) -- (b) -- (c) -- (e) -- (a);
-				\node at (2.25, 2.75) {$P_0$};
-				\node at (1.75, 0.75) {$P_0'$};
-			\end{tikzpicture}	
-		}
-		\subfloat[Second step]
-		{		
-			\begin{tikzpicture}
-				\coordinate (a) at (1, 0);
-				\coordinate (b) at (3, 0);
-				\coordinate (c) at (3.5, 2);
-				\coordinate (d) at (2, 4);
-				\coordinate (e) at (0.5, 1);
-				\coordinate (f) at (2, 0);
-				\coordinate (g) at (intersection of e--c and f--d);
-				
-				\begin{scope}
-					\clip (a) -- (b) -- (c) -- (d) -- (e) -- (a);
-					\foreach \x in {-2,-1.5,...,5}
-					{
-		      			\foreach \y in {0,0.5,...,6}
-		      			{
-		        			\node[draw,circle,inner sep=0.2pt,fill,gray] at (\x,\y) {};
-		      			}
-		    		}
-	    		\end{scope}
-				
-				\draw[very thick] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
-				\draw (a) -- (b) -- (c) -- (e) -- (a);
-				\draw (f) -- (g) -- (c) -- (b) -- (f);
-				\draw[fill=blue, fill opacity=0.2] (c) -- (d) -- (e) -- (c);
-				\draw[fill=green, fill opacity=0.2] (a) -- (f) -- (g) -- (e) -- (a);
-				\draw[fill=brown, fill opacity=0.2] (f) -- (g) -- (c) -- (b) -- (f);
-				\node at (2.25, 2.75) {$P_0$};
-				\node at (1.25, 0.75) {$P_1$};
-				\node at (2.75, 1.25) {$P_2$};
-			\end{tikzpicture}	
-		}
-		\caption{Splitting of a search space into three subproblems and the possible candidates for solutions}
-		\label{fig:branchAndBound}
-	\end{figure}
 	
 	The basic concept for finding solutions in branch-and-bound is an enumeration of all possible candidates. Therefore, it is necessary to separate the search space in an appropriate way, which is the task for the branch-and-reduce step. This step is very similar to the concept of branching, it also depends on a certain heuristic to divide the search space into two or even more disjoint parts. This heuristic can either be selected by the user or be a general one, like splitting the biggest variable domain into two equal sized parts. If the basic search space contains a big amount of possible candidate solutions one reduction may not be enough and therefore this step is applied recursively to the newly create subproblems. This process can be stopped if the number of solutions is reduced to an amount, where it is possible to enumerate all of them and check if they are optimal. A possible division into subproblems can be seen in \reffig{fig:branchAndBound}, where for legibility branch-and-reduce was applied only twice: The first execution split the problem into $P_0$ and $P'_0$, which was then split again into $P_1$ and $P_2$.
 	
