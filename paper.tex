@@ -335,36 +335,69 @@
 	
 	\begin{figure}
 		\center
-		\begin{tikzpicture}
-			\coordinate (a) at (0, 0);
-			\coordinate (b) at (4, 0);
-			\coordinate (c) at (5, 3);
-			\coordinate (d) at (3, 6);
-			\coordinate (e) at (-1, 2);
-			\coordinate (f) at (2, 0);
-			\coordinate (g) at (intersection of e--c and f--d);
-			
-			\begin{scope}
-				\clip (a) -- (b) -- (c) -- (d) -- (e) -- (a);
-				\foreach \x in {-2,-1.5,...,5}
-				{
-	      			\foreach \y in {0,0.5,...,6}
-	      			{
-	        			\node[draw,circle,inner sep=0.2pt,fill,gray] at (\x,\y) {};
-	      			}
-	    		}
-    		\end{scope}
-			
-			\draw[very thick] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
-			\draw (a) -- (b) -- (c) -- (e) -- (a);
-			\draw (f) -- (g) -- (c) -- (b) -- (f);
-			\draw[fill=blue, fill opacity=0.2] (c) -- (d) -- (e) -- (c);
-			\draw[fill=green, fill opacity=0.2] (a) -- (f) -- (g) -- (e) -- (a);
-			\draw[fill=brown, fill opacity=0.2] (f) -- (g) -- (c) -- (b) -- (f);
-			\node at (2.75, 3.75) {$P_0$};
-			\node at (1.25, 1.25) {$P_1$};
-			\node at (3.75, 1.75) {$P_2$};
-		\end{tikzpicture}	
+		\subfloat[First step]
+		{
+			\begin{tikzpicture}
+				\coordinate (a) at (0.5, 0);
+				\coordinate (b) at (3, 0);
+				\coordinate (c) at (3.5, 2);
+				\coordinate (d) at (2, 4);
+				\coordinate (e) at (0, 1);
+				\coordinate (f) at (2, 0);
+				\coordinate (g) at (intersection of e--c and f--d);
+				
+				\begin{scope}
+					\clip (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+					\foreach \x in {-2,-1.5,...,5}
+					{
+		      			\foreach \y in {0,0.5,...,6}
+		      			{
+		        			\node[draw,circle,inner sep=0.2pt,fill,gray] at (\x,\y) {};
+		      			}
+		    		}
+	    		\end{scope}
+				
+				\draw[very thick] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+				\draw (a) -- (b) -- (c) -- (e) -- (a);
+				\draw[fill=blue, fill opacity=0.2] (c) -- (d) -- (e) -- (c);
+				\draw[fill=green, fill opacity=0.2] (a) -- (b) -- (c) -- (e) -- (a);
+				\node at (2.25, 2.75) {$P_0$};
+				\node at (1.75, 0.75) {$P_0'$};
+			\end{tikzpicture}	
+		}
+		\subfloat[Second step]
+		{		
+			\begin{tikzpicture}
+				\coordinate (a) at (0.5, 0);
+				\coordinate (b) at (3, 0);
+				\coordinate (c) at (3.5, 2);
+				\coordinate (d) at (2, 4);
+				\coordinate (e) at (0, 1);
+				\coordinate (f) at (2, 0);
+				\coordinate (g) at (intersection of e--c and f--d);
+				
+				\begin{scope}
+					\clip (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+					\foreach \x in {-2,-1.5,...,5}
+					{
+		      			\foreach \y in {0,0.5,...,6}
+		      			{
+		        			\node[draw,circle,inner sep=0.2pt,fill,gray] at (\x,\y) {};
+		      			}
+		    		}
+	    		\end{scope}
+				
+				\draw[very thick] (a) -- (b) -- (c) -- (d) -- (e) -- (a);
+				\draw (a) -- (b) -- (c) -- (e) -- (a);
+				\draw (f) -- (g) -- (c) -- (b) -- (f);
+				\draw[fill=blue, fill opacity=0.2] (c) -- (d) -- (e) -- (c);
+				\draw[fill=green, fill opacity=0.2] (a) -- (f) -- (g) -- (e) -- (a);
+				\draw[fill=brown, fill opacity=0.2] (f) -- (g) -- (c) -- (b) -- (f);
+				\node at (2.25, 2.75) {$P_0$};
+				\node at (1.25, 0.75) {$P_1$};
+				\node at (2.75, 1.25) {$P_2$};
+			\end{tikzpicture}	
+		}
 		\caption{Splitting of a search space into three subproblems and the possible candidates for solutions}
 		\label{fig:branchAndBound}
 	\end{figure}
