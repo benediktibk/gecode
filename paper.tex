@@ -104,7 +104,7 @@
 	
 	A solver for constraint programming like \emph{Gecode} provides the necessary tools to define constraints like \refeq{eq:squares} in their most natural form as equalities and inequalities. The solver will find all possible solutions or just one of them, depending on the selected algorithm. Consequently, constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design or robotics \cite[p.~221]{trendsInCP}.
 	
-	In the following I will explain the necessary steps to describe and solve a problem with constraint programming: variables, constraints, search trees, constraint propagation and search algorithms. As example of an implementation I will refer to \emph{Gecode} \cite{gecode}.
+	In the following I will explain the necessary steps to describe and solve a problem with constraint programming: variables, constraints, objective functions, search trees, constraint propagation and search algorithms. As example of an implementation I will refer to \emph{Gecode} \cite{gecode}.
 	
 	\section{State of the Art}
 	\subsection{Variable Domains}
@@ -130,6 +130,9 @@
 		\label{eq:alldifferent}
 	\end{equation}
 	which is an example for a combined constraint.
+	
+	\subsection{Objective Functions}
+	A constraint problem can have, additional to constraints, an objective function. As in optimization only one objective function can be optimized at a time, a problem in constraint programming must have either one or no objective function. To solve problems with an objective function it is necessary to select a search algorithm which is capable of optimization.
 	
 	\subsection{Search Trees}
 	
