@@ -64,9 +64,9 @@
 
 \begin{document}
 	\title{Constraint Programming Algorithms used in Gecode}
-	\author{Benedikt~Schmidt}
+	\author{Benedikt~Schmidt <benediktibk@aon.at>}
 	\markboth{Advanced Seminar for VLSI Design Methods, Summer Term 2014}%
-	{Benedikt Schmidt: Constraint Programming - Inside \emph{Gecode}}	
+	{Benedikt Schmidt: Constraint Programming - Inside \emph{Gecode}}
 	\maketitle	
 	
 	\begin{abstract}	
@@ -76,7 +76,7 @@
 	\section{Introduction}
 	Constraint programming is a method to solve mathematical problems through the formulation of constraints, which describe the desired solution. A formal and exact definition for constraint programming can be found in \cite[p.~16]{handbookCP}. For a better visualization of the topic, I will start with the problem of the placement of two squares such that they do not overlap.	
 	
-	\begin{figure}[b]
+	\begin{figure}[h]
 		\center
 		\begin{tikzpicture}
 			\draw (0, 0) rectangle (1, 1);
@@ -104,7 +104,7 @@
 	
 	A solver for constraint programming like \emph{Gecode} provides the necessary tools to define constraints like \refeq{eq:squares} in their most natural form as equalities and inequalities. The solver will find all possible solutions or just one of them, depending on the selected algorithm. Consequently, constraint programming with its ability to consider constraints in their most general form can be used in various fields like scheduling of resources, computer-aided design or robotics \cite[p.~221]{trendsInCP}.
 	
-	In the following I will explain the necessary steps to describe and solve a problem with constraint programming: variables, constraints, objective functions, search trees, constraint propagation and search algorithms. As example of an implementation I will refer to \emph{Gecode} \cite{gecode}.
+	In the following I will explain the necessary steps to describe and solve a problem with constraint programming: variables, constraints, objective functions, search trees, constraint propagation and search algorithms. As example of an implementation I will refer to \emph{Gecode}\footnote{http://www.gecode.org/}.
 	
 	\section{State of the Art}
 	\subsection{Variable Domains}
@@ -114,10 +114,10 @@
 		\item Bool: $x \in \{\text{true}, \text{false}\}$
 		\item Float: intervals or unions of intervals, e.g. $x \in [-4, 3]$, $x \in [-10, 8] \cup [10, 12]$
 	\end{itemize}
-	This distinction is fundamental as especially for floating variables a combinatorial approach to constraint programming is impossible.
+	This distinction is fundamental as especially for floating variables a combinatorial approach is impossible.
 	
 	\subsection{Constraint Types}
-	The choice of constraint types and how comfortable it is to specify them varies from the programming language in which the problem is implemented. For sure, there is also a difference in the interfaces of the libraries for constraint programming. Typical constraints are
+	The choice of constraint types and how comfortable it is to specify them varies from the programming language in which the problem is implemented. For sure, there is also a difference in the interfaces of the libraries for constraint programming. Typical constraints are:
 	\begin{itemize}
 		\item Equalities: $x = y + 2$, $x^2 + y^2 = 1$, \dots
 		\item Inequalities: $x \ne y$, \dots
@@ -442,8 +442,6 @@
 		W.~van~Hoeve, \emph{The Alldifferent Constraint: A Survey}, http://www.andrew.cmu.edu/user/vanhoeve/papers/alldiff.pdf
 		\bibitem{trendsInCP}
 		F.~Benhamou, N.~Jussien, B.~A.~O'Sullivan, \emph{Trends in Constraint Programming}, Wiley-ISTE, 2007, ISBN-13: 978-1-905209-97-2
-		\bibitem{gecode}
-		http://www.gecode.org/
 		\bibitem{programmingGecode}
 		C.~Schulte, G.~Tack and M.~Z.~Lagerkvist, \emph{Modeling and Programming with Gecode}, http://www.gecode.org/doc-latest/MPG.pdf
 		\bibitem{limitedDiscrepancy}
